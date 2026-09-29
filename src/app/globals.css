@@ -1,0 +1,236 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   Imperio Club · Sistema de diseño
+   Negro mármol, hueso y bronce antiguo. Púrpura imperial solo como acento
+   puntual (tarjeta del Club). Serif de inscripción para titulares y sans
+   geométrica para textos y etiquetas.
+   ========================================================================== */
+
+@theme {
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-serif: var(--font-cormorant), "Cormorant Garamond", ui-serif, Georgia, serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+  --color-ink: #0c0b0a;
+  --color-coal: #131210;
+  --color-graphite: #1c1a18;
+  --color-graphite-2: #282624;
+  --color-graphite-3: #3a3733;
+
+  --color-stone-50: #f5f2ec;
+  --color-stone-100: #eeeae2;
+  --color-stone-200: #e2ddd2;
+  --color-stone-300: #cdc6b8;
+  --color-stone-400: #aaa292;
+  --color-stone-500: #888071;
+  --color-stone-600: #6a6357;
+  --color-stone-700: #4c463d;
+
+  --color-bronze: #b89262;
+  --color-bronze-light: #d9c19b;
+  --color-bronze-deep: #7f6243;
+  --color-purpura: #4b1631;
+
+  --ease-premium: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --animate-spin-slow: spin 48s linear infinite;
+  --animate-marquee: marquee 38s linear infinite;
+
+  @keyframes marquee {
+    from {
+      transform: translate3d(0, 0, 0);
+    }
+    to {
+      transform: translate3d(-50%, 0, 0);
+    }
+  }
+}
+
+/* ---------- Base ---------- */
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    /* Las secciones ya tienen aire superior de sobra para la cabecera. */
+    scroll-padding-top: 0;
+  }
+
+  body {
+    background-color: var(--color-stone-50);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-feature-settings: "ss01" on, "cv11" on;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background-color: var(--color-bronze);
+    color: var(--color-ink);
+  }
+
+  :focus-visible {
+    outline: 1px solid var(--color-bronze);
+    outline-offset: 4px;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  /* Las alternativas de Geist (ss01, cv11) desplazan los acentos en la serif. */
+  .font-serif {
+    font-feature-settings: normal;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+}
+
+/* ---------- Tipografía editorial ---------- */
+@utility text-display {
+  font-family: var(--font-serif);
+  font-feature-settings: normal;
+  font-size: clamp(3.25rem, 1.4rem + 7.6vw, 10.5rem);
+  line-height: 0.92;
+  letter-spacing: -0.02em;
+  font-weight: 300;
+}
+
+@utility text-headline {
+  font-family: var(--font-serif);
+  font-feature-settings: normal;
+  font-size: clamp(2.6rem, 1.5rem + 4vw, 6rem);
+  line-height: 0.98;
+  letter-spacing: -0.015em;
+  font-weight: 300;
+}
+
+@utility text-title {
+  font-family: var(--font-serif);
+  font-feature-settings: normal;
+  font-size: clamp(2rem, 1.4rem + 2.2vw, 3.6rem);
+  line-height: 1.02;
+  letter-spacing: -0.01em;
+  font-weight: 400;
+}
+
+@utility text-subtitle {
+  font-size: clamp(1.25rem, 1.05rem + 0.7vw, 1.75rem);
+  line-height: 1.3;
+  letter-spacing: -0.015em;
+  font-weight: 300;
+}
+
+@utility text-lead {
+  font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem);
+  line-height: 1.6;
+  letter-spacing: -0.005em;
+}
+
+@utility text-label {
+  font-size: 0.75rem;
+  line-height: 1.2;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+@utility text-wordmark {
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+/* Numeración romana de inscripción */
+@utility text-numeral {
+  font-family: var(--font-serif);
+  font-feature-settings: normal;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  font-variant-numeric: lining-nums;
+}
+
+/* ---------- Layout ---------- */
+@utility container-page {
+  width: 100%;
+  max-width: 1440px;
+  margin-inline: auto;
+  padding-inline: clamp(1.25rem, 0.5rem + 3.2vw, 4rem);
+}
+
+@utility section-y {
+  padding-block: clamp(5.5rem, 3rem + 8vw, 11rem);
+}
+
+/* Línea fina reutilizable */
+@utility hairline {
+  height: 1px;
+  background-color: currentColor;
+  opacity: 0.16;
+}
+
+/* Guía de puntos de la carta (nombre ······ precio) */
+@utility leader {
+  flex: 1 1 auto;
+  min-width: 1.5rem;
+  height: 1px;
+  align-self: flex-end;
+  margin-bottom: 0.4em;
+  background-image: radial-gradient(circle, currentColor 0.6px, transparent 0.9px);
+  background-size: 6px 1px;
+  background-repeat: repeat-x;
+  opacity: 0.35;
+}
+
+/* ---------- Lenis (scroll fluido) ---------- */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis:not(.lenis-autoToggle).lenis-stopped {
+  overflow: clip;
+}
+
+.lenis [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+/* ---------- Grano sutil ---------- */
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.07;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+/* ---------- Foco de luz sobre el mármol (sigue al cursor) ---------- */
+.spotlight {
+  --x: 70%;
+  --y: 40%;
+  -webkit-mask-image: radial-gradient(34rem circle at var(--x) var(--y), #000 0%, rgb(0 0 0 / 0.55) 38%, transparent 72%);
+  mask-image: radial-gradient(34rem circle at var(--x) var(--y), #000 0%, rgb(0 0 0 / 0.55) 38%, transparent 72%);
+}
+
+/* ---------- Introducción (solo la primera visita de la sesión) ---------- */
+html[data-intro="seen"] #intro {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  #intro {
+    display: none;
+  }
+}

@@ -1,0 +1,3 @@
+Sube aquí las fotos de trabajos (01.jpg, 02.jpg, …).
+La sección «La obra» aparece sola en la portada en cuanto haya al menos una foto.
+Se muestran hasta 9, ordenadas por nombre. Formato recomendado: vertical 4:5, mínimo 1200 px de ancho.
