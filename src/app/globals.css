@@ -225,6 +225,17 @@ html[data-intro="seen"] #intro {
   display: none;
 }
 
+/* Red de seguridad: si el JavaScript no llega a ejecutarse, el telón se retira solo. */
+#intro {
+  animation: intro-fallback 0s linear 4s forwards;
+}
+
+@keyframes intro-fallback {
+  to {
+    visibility: hidden;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
