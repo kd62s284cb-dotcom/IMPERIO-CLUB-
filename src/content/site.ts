@@ -17,7 +17,7 @@ export const site = {
   tagline: "Barbería de autor en Sevilla.",
   description:
     "Imperio Club es una barbería de autor en Sevilla: corte a tijera y máquina, degradados, arreglo de barba y afeitado clásico a navaja con toalla caliente. Reserva tu cita en segundos por WhatsApp.",
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.imperioclub.es", // PENDIENTE: dominio definitivo
+  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.imperioclubsvq.com",
   locale: "es_ES",
   city: "Sevilla",
   contact: {

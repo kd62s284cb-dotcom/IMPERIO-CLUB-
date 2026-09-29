@@ -21,7 +21,7 @@ Web de **Imperio Club**, barbería de autor en Sevilla. Construida con la misma 
 3. **`src/content/home.ts`** — el Club (rangos, cuotas y ventajas) es una **propuesta comercial**. Ajustarla o quitar `<Club />` de `src/app/(site)/page.tsx`.
 4. **Fotos:** subir fotos de trabajos a `public/galeria/` (01.jpg, 02.jpg…). La sección «La obra» aparece sola.
 5. **Logotipo:** si la barbería ya tiene uno, sustituir `src/components/ui/Logo.tsx` e `src/app/icon.svg`.
-6. En Vercel, definir `NEXT_PUBLIC_SITE_URL` con el dominio definitivo.
+6. Dominio: www.imperioclubsvq.com (registrado en Hostinger, DNS apuntando a Vercel).
 
 ## Desarrollo
 
