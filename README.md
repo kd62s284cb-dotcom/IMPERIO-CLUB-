@@ -33,6 +33,10 @@ npm run typecheck
 npm run build
 ```
 
+## Herramientas internas
+
+`interno/` guarda herramientas de uso interno que **no se publican en la web** (excluidas en `.vercelignore`). La primera es el **generador de ideas para redes** (`interno/generador-ideas.html`): análisis de la competencia, generador de ideas, plan semanal y banco de ideas con resultados. Se abre con doble clic, funciona sin internet y guarda los datos solo en el navegador. Instrucciones en `interno/LEEME.md`.
+
 ## Estructura
 
 ```
@@ -46,4 +50,5 @@ src/
   lib/                 Horario en vivo, reservas por WhatsApp, numeración romana
 public/images/         Texturas de mármol generadas para la marca
 public/galeria/        Fotos de trabajos (opcional)
+interno/               Herramientas internas (no se publican)
 ```

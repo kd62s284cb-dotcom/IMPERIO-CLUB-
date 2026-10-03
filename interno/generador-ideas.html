@@ -1,0 +1,2634 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Herramienta interna: no se conecta a ningún sitio. Todo lo que escribes se queda en este navegador. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; base-uri 'none'">
+<meta name="robots" content="noindex, nofollow">
+<title>Generador de ideas · Imperio Club</title>
+<style>
+  :root {
+    --ink: #0c0b0a;
+    --coal: #131210;
+    --graphite: #1c1a18;
+    --graphite-2: #282624;
+    --graphite-3: #3a3733;
+    --stone-50: #f5f2ec;
+    --stone-200: #e2ddd2;
+    --stone-300: #cdc6b8;
+    --stone-400: #aaa292;
+    --stone-500: #888071;
+    --bronze: #b89262;
+    --bronze-light: #d9c19b;
+    --bronze-deep: #7f6243;
+    --purpura: #4b1631;
+    --good: #9fbf8a;
+    --mid: #d5b06a;
+    --bad: #d08a7b;
+    --serif: "Cormorant Garamond", "Cormorant", "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--ink) radial-gradient(1200px 600px at 85% -10%, #1d1a16 0%, transparent 60%) no-repeat;
+    color: var(--stone-200);
+    font: 15px/1.55 var(--sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection { background: var(--bronze); color: var(--ink); }
+  :focus-visible { outline: 1px solid var(--bronze); outline-offset: 3px; }
+  h1, h2, h3 { font-family: var(--serif); font-weight: 400; color: var(--stone-50); text-wrap: balance; margin: 0; }
+  p { text-wrap: pretty; }
+  a { color: var(--bronze-light); }
+  small, .muted { color: var(--stone-400); }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 16px; }
+
+  /* ---------- Cabecera ---------- */
+  .top { border-bottom: 1px solid var(--graphite-3); }
+  .top .wrap { display: flex; align-items: center; gap: 16px; padding-top: 22px; padding-bottom: 18px; flex-wrap: wrap; }
+  .laurel { width: 44px; height: 44px; color: var(--bronze); flex: none; }
+  .brand-eyebrow { font-size: 11px; letter-spacing: .22em; text-transform: uppercase; color: var(--bronze); }
+  .brand-title { font-size: clamp(26px, 4vw, 38px); line-height: 1.05; }
+  .privacy { margin-left: auto; font-size: 12px; color: var(--stone-400); max-width: 300px; display: flex; gap: 8px; align-items: flex-start; }
+  .privacy svg { flex: none; margin-top: 2px; color: var(--bronze); }
+
+  /* ---------- Pestañas ---------- */
+  .tabs { position: sticky; top: 0; z-index: 5; background: rgba(12, 11, 10, .92); backdrop-filter: blur(8px); border-bottom: 1px solid var(--graphite-3); }
+  .tabs .wrap { display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; }
+  .tabs .wrap::-webkit-scrollbar { display: none; }
+  .tab {
+    appearance: none; border: 0; background: none; color: var(--stone-400); cursor: pointer;
+    padding: 14px 14px 12px; font: inherit; font-size: 14px; white-space: nowrap; border-bottom: 2px solid transparent;
+  }
+  .tab .num { font-family: var(--serif); color: var(--bronze-deep); margin-right: 6px; font-size: 16px; }
+  .tab:hover { color: var(--stone-200); }
+  .tab[aria-selected="true"] { color: var(--stone-50); border-bottom-color: var(--bronze); }
+  .tab[aria-selected="true"] .num { color: var(--bronze); }
+
+  main { padding: 28px 0 80px; }
+  [role="tabpanel"][hidden] { display: none; }
+  .section-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin: 0 0 18px; }
+  .section-head h2 { font-size: clamp(28px, 3.6vw, 40px); line-height: 1.05; }
+  .section-head p { margin: 6px 0 0; color: var(--stone-400); max-width: 640px; }
+  .block-title { font-family: var(--serif); font-size: 24px; color: var(--stone-50); margin: 34px 0 12px; display: flex; align-items: baseline; gap: 10px; }
+  .block-title .num { color: var(--bronze); font-size: 18px; }
+
+  /* ---------- Piezas ---------- */
+  .card { background: var(--coal); border: 1px solid var(--graphite-3); border-radius: 4px; padding: 18px; }
+  .card + .card { margin-top: 12px; }
+  .grid { display: grid; gap: 12px; }
+  .grid-2 { grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); }
+  .grid-3 { grid-template-columns: repeat(auto-fill, minmax(min(100%, 230px), 1fr)); }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .spacer { flex: 1; }
+  .eyebrow { font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--bronze); }
+  .chip {
+    display: inline-flex; align-items: center; gap: 6px; font-size: 11px; letter-spacing: .08em; text-transform: uppercase;
+    border: 1px solid var(--graphite-3); color: var(--stone-300); padding: 3px 8px; border-radius: 2px; white-space: nowrap; max-width: 100%;
+  }
+  @media (max-width: 640px) { .chip { white-space: normal; } }
+  .chip.bronze { border-color: var(--bronze-deep); color: var(--bronze-light); }
+  .chip.good { border-color: #4f6744; color: var(--good); }
+  .chip.mid { border-color: #6b5a33; color: var(--mid); }
+  .chip.bad { border-color: #6d4239; color: var(--bad); }
+  .chip.purple { border-color: #7a2d55; color: #e6b8cf; background: rgba(75, 22, 49, .35); }
+
+  button.btn, label.btn {
+    appearance: none; font: inherit; font-size: 14px; cursor: pointer; border-radius: 2px;
+    border: 1px solid var(--graphite-3); background: var(--graphite); color: var(--stone-200);
+    padding: 9px 14px; min-height: 40px; display: inline-flex; align-items: center; gap: 8px; text-decoration: none;
+  }
+  button.btn:hover, label.btn:hover { border-color: var(--stone-500); color: var(--stone-50); }
+  button.btn.primary { background: var(--bronze); border-color: var(--bronze); color: var(--ink); font-weight: 600; }
+  button.btn.primary:hover { background: var(--bronze-light); border-color: var(--bronze-light); }
+  button.btn.ghost { background: none; }
+  button.btn.small { min-height: 32px; padding: 5px 10px; font-size: 13px; }
+  button.btn.danger:hover { border-color: var(--bad); color: var(--bad); }
+  button.btn[disabled] { opacity: .4; cursor: not-allowed; }
+
+  label.field { display: grid; gap: 5px; font-size: 13px; color: var(--stone-300); }
+  label.field .hint { font-size: 12px; color: var(--stone-500); }
+  input[type="text"], input[type="number"], input[type="date"], select, textarea {
+    font: inherit; font-size: 14px; color: var(--stone-50); background: var(--ink);
+    border: 1px solid var(--graphite-3); border-radius: 2px; padding: 9px 10px; width: 100%; min-height: 40px;
+  }
+  textarea { min-height: 70px; resize: vertical; }
+  input:focus, select:focus, textarea:focus { border-color: var(--bronze); outline: none; }
+  .switch { display: inline-flex; align-items: center; gap: 10px; cursor: pointer; font-size: 14px; }
+  .switch input { width: 18px; height: 18px; accent-color: var(--bronze); }
+
+  .empty { border: 1px dashed var(--graphite-3); border-radius: 4px; padding: 28px 20px; text-align: center; color: var(--stone-400); }
+  .empty h3 { font-size: 26px; margin-bottom: 8px; }
+  .empty p { margin: 0 auto 16px; max-width: 520px; }
+
+  details.guide { background: var(--coal); border: 1px solid var(--graphite-3); border-radius: 4px; padding: 0 18px; }
+  details.guide summary { cursor: pointer; padding: 14px 0; color: var(--stone-50); list-style: none; display: flex; gap: 10px; align-items: center; }
+  details.guide summary::-webkit-details-marker { display: none; }
+  details.guide summary::before { content: "+"; color: var(--bronze); font-size: 18px; width: 12px; }
+  details.guide[open] summary::before { content: "–"; }
+  details.guide ol { margin: 0 0 16px; padding-left: 22px; color: var(--stone-300); }
+  details.guide li { margin: 4px 0; }
+
+  /* ---------- Tablas ---------- */
+  .table-scroll { overflow-x: auto; border: 1px solid var(--graphite-3); border-radius: 4px; background: var(--coal); }
+  table { border-collapse: collapse; width: 100%; font-size: 13px; }
+  th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--graphite-2); white-space: nowrap; vertical-align: top; }
+  th { font-weight: 500; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--stone-400); background: var(--graphite); }
+  tr:last-child td { border-bottom: 0; }
+  tr.me td { background: rgba(184, 146, 98, .07); }
+  tr.me td:first-child { box-shadow: inset 2px 0 0 var(--bronze); }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .wrap-cell { white-space: normal; min-width: 220px; }
+
+  /* ---------- Huecos ---------- */
+  .gap-row { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(90px, 1fr) auto; gap: 12px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--graphite-2); }
+  .gap-row:last-child { border-bottom: 0; }
+  .gap-row .lbl { font-size: 14px; color: var(--stone-200); }
+  .gap-row .lbl small { display: block; font-size: 12px; }
+  .bar { height: 8px; background: var(--graphite-2); border-radius: 1px; position: relative; overflow: hidden; }
+  .bar > span { position: absolute; inset: 0 auto 0 0; background: var(--bronze-deep); }
+  .bar-label { font-size: 12px; color: var(--stone-400); margin-top: 4px; font-variant-numeric: tabular-nums; }
+  @media (max-width: 560px) {
+    .gap-row { grid-template-columns: 1fr auto; }
+    .gap-row .bar-wrap { grid-column: 1 / -1; order: 3; }
+  }
+
+  .rec { display: grid; grid-template-columns: 34px 1fr; gap: 10px; padding: 14px 0; border-bottom: 1px solid var(--graphite-2); }
+  .rec:last-child { border-bottom: 0; }
+  .rec .n { font-family: var(--serif); color: var(--bronze); font-size: 20px; line-height: 1.2; }
+  .rec h4 { margin: 0 0 4px; font-size: 15px; color: var(--stone-50); font-weight: 600; }
+  .rec p { margin: 0; color: var(--stone-300); }
+  .rec.p1 h4::after { content: "Prioridad"; margin-left: 8px; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--bronze-light); border: 1px solid var(--bronze-deep); padding: 1px 6px; vertical-align: middle; }
+
+  .comp-card h3 { font-size: 24px; line-height: 1.1; }
+  .comp-card .handle { color: var(--stone-400); font-size: 13px; }
+  .stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 14px 0; }
+  .stat { background: var(--ink); border: 1px solid var(--graphite-2); padding: 8px 10px; border-radius: 2px; }
+  .stat b { display: block; font-size: 17px; color: var(--stone-50); font-weight: 500; font-variant-numeric: tabular-nums; }
+  .stat span { font-size: 11px; color: var(--stone-500); letter-spacing: .06em; text-transform: uppercase; }
+  .tips { margin: 0; padding-left: 18px; color: var(--stone-300); font-size: 14px; }
+  .tips li { margin: 6px 0; }
+  .tips li::marker { color: var(--bronze); }
+  .updated { font-size: 12px; color: var(--stone-500); }
+
+  /* ---------- Ideas ---------- */
+  .filters { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 190px), 1fr)); }
+  .idea { background: var(--coal); border: 1px solid var(--graphite-3); border-radius: 4px; padding: 20px; position: relative; }
+  .idea + .idea { margin-top: 14px; }
+  .idea .meta { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+  .idea h3 { font-size: clamp(22px, 2.6vw, 28px); line-height: 1.12; margin-bottom: 12px; }
+  .idea .hook { font-family: var(--serif); font-style: italic; font-size: 20px; color: var(--bronze-light); border-left: 2px solid var(--bronze); padding: 2px 0 2px 12px; margin: 0 0 14px; }
+  .idea .hook small { display: block; font-family: var(--sans); font-style: normal; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--stone-500); margin-bottom: 2px; }
+  .idea-grid { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 18px; }
+  @media (max-width: 760px) { .idea-grid { grid-template-columns: 1fr; } }
+  .idea h5 { margin: 0 0 6px; font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--bronze); font-weight: 500; }
+  .idea ol { margin: 0 0 12px; padding-left: 20px; color: var(--stone-200); }
+  .idea ol li { margin: 5px 0; }
+  .idea ol li::marker { color: var(--bronze-deep); font-family: var(--serif); }
+  .idea .box { background: var(--ink); border: 1px solid var(--graphite-2); padding: 10px 12px; border-radius: 2px; margin-bottom: 12px; font-size: 14px; }
+  .idea .tags { color: var(--bronze-light); font-size: 13px; margin-top: 6px; word-spacing: 4px; }
+  .idea .why { font-size: 14px; color: var(--stone-300); margin: 0 0 8px; }
+  .idea .edge { font-size: 14px; color: var(--good); margin: 0 0 8px; }
+  .idea .note { font-size: 13px; color: var(--mid); margin: 0 0 8px; }
+  .idea .actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--graphite-2); }
+  .dots { letter-spacing: 2px; color: var(--bronze); }
+  .dots i { font-style: normal; color: var(--graphite-3); }
+  .event-chips { display: flex; gap: 6px; flex-wrap: wrap; }
+
+  /* ---------- Plan ---------- */
+  .week { margin-top: 18px; }
+  .week h3 { font-size: 22px; margin-bottom: 10px; }
+  .slot { display: grid; grid-template-columns: 120px minmax(0, 1fr) auto; gap: 14px; padding: 14px 16px; background: var(--coal); border: 1px solid var(--graphite-3); border-radius: 4px; }
+  .slot + .slot { margin-top: 8px; }
+  .slot .when b { display: block; color: var(--stone-50); font-weight: 500; text-transform: capitalize; }
+  .slot .when span { font-size: 13px; color: var(--stone-400); }
+  .slot h4 { margin: 4px 0 4px; font-family: var(--serif); font-weight: 400; font-size: 20px; color: var(--stone-50); line-height: 1.15; }
+  .slot p { margin: 0; font-size: 14px; color: var(--stone-300); }
+  .slot details { margin-top: 8px; font-size: 14px; }
+  .slot details summary { cursor: pointer; color: var(--bronze-light); font-size: 13px; }
+  .slot .slot-actions { display: flex; flex-direction: column; gap: 6px; }
+  @media (max-width: 640px) {
+    .slot { grid-template-columns: 1fr; }
+    .slot .slot-actions { flex-direction: row; }
+  }
+  .stories { margin-top: 8px; padding: 12px 16px; border: 1px dashed var(--graphite-3); border-radius: 4px; font-size: 14px; color: var(--stone-300); }
+  .stories ul { margin: 6px 0 0; padding-left: 18px; }
+  .stories li { margin: 3px 0; }
+
+  /* ---------- Banco ---------- */
+  .saved { background: var(--coal); border: 1px solid var(--graphite-3); border-radius: 4px; padding: 16px; }
+  .saved + .saved { margin-top: 10px; }
+  .saved h4 { margin: 6px 0 4px; font-family: var(--serif); font-weight: 400; font-size: 22px; color: var(--stone-50); line-height: 1.15; }
+  .saved .results { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 150px), 1fr)); margin-top: 12px; }
+  .saved details { margin-top: 8px; }
+  .saved details summary { cursor: pointer; color: var(--bronze-light); font-size: 13px; }
+  .status-pendiente { border-left: 2px solid var(--stone-500); }
+  .status-grabada { border-left: 2px solid var(--mid); }
+  .status-publicada { border-left: 2px solid var(--good); }
+  .kpis { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 150px), 1fr)); gap: 10px; }
+  .kpi { background: var(--coal); border: 1px solid var(--graphite-3); padding: 14px; border-radius: 4px; }
+  .kpi b { display: block; font-family: var(--serif); font-size: 32px; font-weight: 400; color: var(--stone-50); line-height: 1; }
+  .kpi span { font-size: 12px; color: var(--stone-400); }
+
+  /* ---------- Diálogo ---------- */
+  dialog {
+    width: min(760px, calc(100vw - 24px)); max-height: calc(100vh - 24px); padding: 0; border: 1px solid var(--graphite-3);
+    border-radius: 4px; background: var(--coal); color: var(--stone-200);
+  }
+  dialog::backdrop { background: rgba(0, 0, 0, .7); }
+  dialog form { display: flex; flex-direction: column; max-height: calc(100vh - 26px); }
+  .dlg-head, .dlg-foot { padding: 14px 18px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--graphite-3); }
+  .dlg-foot { border-bottom: 0; border-top: 1px solid var(--graphite-3); justify-content: flex-end; }
+  .dlg-head h2 { font-size: 26px; flex: 1; }
+  .dlg-body { padding: 4px 18px 18px; overflow-y: auto; }
+  fieldset { border: 0; padding: 0; margin: 18px 0 0; }
+  legend { font-family: var(--serif); font-size: 20px; color: var(--stone-50); margin-bottom: 10px; padding: 0; }
+  legend small { font-family: var(--sans); font-size: 12px; margin-left: 6px; }
+  .checks { display: grid; gap: 6px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); }
+  .checks label { display: flex; gap: 8px; align-items: flex-start; font-size: 14px; padding: 6px 8px; border: 1px solid var(--graphite-2); border-radius: 2px; cursor: pointer; }
+  .checks input { accent-color: var(--bronze); margin-top: 3px; }
+  .dim { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--graphite-2); }
+  .dim .hint { display: block; font-size: 12px; color: var(--stone-500); }
+  .seg { display: inline-flex; border: 1px solid var(--graphite-3); border-radius: 2px; overflow: hidden; }
+  .seg label { position: relative; }
+  .seg input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
+  .seg span { display: block; min-width: 32px; padding: 6px 0; text-align: center; font-size: 13px; color: var(--stone-400); border-left: 1px solid var(--graphite-3); }
+  .seg label:first-child span { border-left: 0; }
+  .seg input:checked + span { background: var(--bronze); color: var(--ink); font-weight: 600; }
+  .seg input:focus-visible + span { outline: 1px solid var(--bronze-light); outline-offset: -3px; }
+
+  .toast {
+    position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 20px); opacity: 0; pointer-events: none;
+    background: var(--stone-50); color: var(--ink); padding: 10px 16px; border-radius: 2px; font-size: 14px; transition: .25s;
+    z-index: 50; max-width: calc(100vw - 32px);
+  }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+  .banner { border: 1px solid #6b5a33; color: var(--mid); background: rgba(213, 176, 106, .06); padding: 10px 14px; border-radius: 4px; margin-bottom: 16px; font-size: 14px; }
+
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+
+  /* ---------- Impresión (plan) ---------- */
+  @media print {
+    body { background: #fff; color: #000; font-size: 11pt; }
+    .top, .tabs, .no-print, .slot-actions, .toast { display: none !important; }
+    [role="tabpanel"] { display: none !important; }
+    #panel-plan { display: block !important; }
+    .slot, .stories { border-color: #bbb; background: #fff; break-inside: avoid; }
+    h2, h3, h4, .slot .when b { color: #000; }
+    .slot p, .stories, .slot .when span { color: #333; }
+    .slot details { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <svg class="laurel" id="laurel" viewBox="0 0 100 100" aria-hidden="true"></svg>
+    <div>
+      <div class="brand-eyebrow"><span data-brand-name>Imperio Club</span> · Uso interno</div>
+      <h1 class="brand-title">Generador de ideas para redes</h1>
+    </div>
+    <p class="privacy">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="1"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+      <span>No está en la web ni se conecta a internet. Todo se guarda solo en este navegador: haz copias desde «Ajustes».</span>
+    </p>
+  </div>
+</header>
+
+<nav class="tabs" aria-label="Secciones">
+  <div class="wrap" role="tablist">
+    <button class="tab" role="tab" id="tab-competencia" aria-controls="panel-competencia" data-tab="competencia"><span class="num">I</span>Competencia</button>
+    <button class="tab" role="tab" id="tab-generador" aria-controls="panel-generador" data-tab="generador"><span class="num">II</span>Generador</button>
+    <button class="tab" role="tab" id="tab-plan" aria-controls="panel-plan" data-tab="plan"><span class="num">III</span>Plan semanal</button>
+    <button class="tab" role="tab" id="tab-banco" aria-controls="panel-banco" data-tab="banco"><span class="num">IV</span>Banco de ideas</button>
+    <button class="tab" role="tab" id="tab-ajustes" aria-controls="panel-ajustes" data-tab="ajustes"><span class="num">V</span>Ajustes</button>
+  </div>
+</nav>
+
+<main>
+  <div class="wrap">
+    <div id="storage-warning" class="banner" hidden>Este navegador no deja guardar datos (¿ventana privada?). Puedes usar la herramienta, pero exporta una copia en «Ajustes» antes de cerrar.</div>
+    <section role="tabpanel" id="panel-competencia" aria-labelledby="tab-competencia"></section>
+    <section role="tabpanel" id="panel-generador" aria-labelledby="tab-generador" hidden></section>
+    <section role="tabpanel" id="panel-plan" aria-labelledby="tab-plan" hidden></section>
+    <section role="tabpanel" id="panel-banco" aria-labelledby="tab-banco" hidden></section>
+    <section role="tabpanel" id="panel-ajustes" aria-labelledby="tab-ajustes" hidden></section>
+  </div>
+</main>
+
+<dialog id="dlg" aria-labelledby="dlg-title">
+  <form id="dlg-form" novalidate>
+    <div class="dlg-head">
+      <h2 id="dlg-title">Añadir competidor</h2>
+      <button type="button" class="btn ghost small" data-action="dlg-close" aria-label="Cerrar">✕</button>
+    </div>
+    <div class="dlg-body">
+      <fieldset>
+        <legend>Identidad</legend>
+        <div class="grid grid-3">
+          <label class="field" data-only="comp">Nombre de la barbería *<input type="text" name="name" autocomplete="off"></label>
+          <label class="field" data-only="comp">Tipo
+            <select name="kind">
+              <option value="local">Competencia local (misma ciudad)</option>
+              <option value="referente">Referente de otra ciudad</option>
+            </select>
+          </label>
+          <label class="field">Instagram<input type="text" name="ig" placeholder="@usuario" autocomplete="off"></label>
+          <label class="field">TikTok<input type="text" name="tiktok" placeholder="@usuario" autocomplete="off"></label>
+          <label class="field">Zona o barrio<input type="text" name="area" placeholder="Nervión, Triana…" autocomplete="off"></label>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>Números <small>mira los últimos 30 días</small></legend>
+        <div class="grid grid-3">
+          <label class="field">Seguidores en Instagram<input type="number" name="igFollowers" min="0" step="1" inputmode="numeric"></label>
+          <label class="field">Seguidores en TikTok<input type="number" name="tiktokFollowers" min="0" step="1" inputmode="numeric"></label>
+          <label class="field">Publicaciones por semana<input type="number" name="postsPerWeek" min="0" step="0.5" inputmode="decimal"><span class="hint">Publicaciones del último mes ÷ 4</span></label>
+          <label class="field">Interacción media por publicación<input type="number" name="avgInteractions" min="0" step="1" inputmode="numeric"><span class="hint">«Me gusta» + comentarios de las últimas 9, ÷ 9</span></label>
+          <label class="field">Visualizaciones medias por reel<input type="number" name="avgViews" min="0" step="1" inputmode="numeric"><span class="hint">Media de los últimos 6 reels</span></label>
+          <label class="field">Precio del corte (€)<input type="number" name="price" min="0" step="0.5" inputmode="decimal"></label>
+          <label class="field">Nota de reseñas (Google, Booksy…)<input type="number" name="rating" min="0" max="5" step="0.1" inputmode="decimal"></label>
+          <label class="field">Número de reseñas<input type="number" name="reviews" min="0" step="1" inputmode="numeric"></label>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>¿Qué tipo de contenido publica? <small>marca lo que hayas visto en sus últimas 12 publicaciones</small></legend>
+        <div class="checks" id="dlg-covers"></div>
+      </fieldset>
+      <fieldset>
+        <legend>Valoración del 1 al 5 <small>tu opinión sincera</small></legend>
+        <div id="dlg-dims"></div>
+      </fieldset>
+      <fieldset>
+        <legend>Observaciones</legend>
+        <div class="grid">
+          <label class="field">Su publicación que mejor funciona<input type="text" name="bestPost" placeholder="p. ej. «Reel de antes y después con audio de moda, 80.000 visualizaciones»" autocomplete="off"><span class="hint">El Generador creará tu versión mejorada.</span></label>
+          <div class="grid grid-2">
+            <label class="field">Puntos fuertes<textarea name="strengths"></textarea></label>
+            <label class="field">Puntos débiles<textarea name="weaknesses"></textarea></label>
+          </div>
+          <label class="field">Notas<textarea name="notes"></textarea></label>
+        </div>
+      </fieldset>
+    </div>
+    <div class="dlg-foot">
+      <button type="button" class="btn ghost" data-action="dlg-close">Cancelar</button>
+      <button type="submit" class="btn primary">Guardar</button>
+    </div>
+  </form>
+</dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+'use strict';
+
+/* ==========================================================================
+   Imperio Club · Generador de ideas para redes (herramienta interna)
+   Un solo archivo, sin dependencias ni conexión. Los datos viven en el
+   localStorage de este navegador; «Ajustes» permite exportar e importar.
+   ========================================================================== */
+
+const STORAGE_KEY = 'imperio-club.generador.v1';
+
+/* ---------- Datos de la marca (copiados de src/content, editables en Ajustes) ---------- */
+
+const DEFAULT_SERVICES = [
+  { slug: 'corte-clasico', name: 'Corte clásico', price: 16, minutes: 30 },
+  { slug: 'degradado', name: 'Degradado', price: 18, minutes: 40 },
+  { slug: 'barba', name: 'Arreglo de barba', price: 12, minutes: 20 },
+  { slug: 'corte-y-barba', name: 'Corte y barba', price: 25, minutes: 50 },
+  { slug: 'afeitado-imperial', name: 'Afeitado imperial', price: 18, minutes: 30 },
+  { slug: 'ritual-imperio', name: 'Ritual Imperio', price: 38, minutes: 75 },
+  { slug: 'corte-infantil', name: 'Corte infantil', price: 12, minutes: 25 },
+  { slug: 'cejas-y-detalles', name: 'Cejas y detalles', price: 5, minutes: 10 },
+];
+/** Servicios que se eligen al azar cuando una idea vale para «cualquier servicio». */
+const ADULT_SERVICES = ['corte-clasico', 'degradado', 'corte-y-barba', 'ritual-imperio', 'barba'];
+
+/* ---------- Catálogos ---------- */
+
+const PILLARS = {
+  oficio: { label: 'El oficio', desc: 'Transformaciones, técnica y plano detalle' },
+  legado: { label: 'Legado Imperio', desc: 'Roma, Itálica y Adriano: la historia que solo vosotros podéis contar' },
+  sevilla: { label: 'Sevilla', desc: 'Ciudad, barrio, humor local y colaboraciones con vecinos' },
+  educacion: { label: 'Educación', desc: 'Consejos útiles que se guardan y se comparten' },
+  backstage: { label: 'Detrás del sillón', desc: 'Equipo, día a día y personalidad' },
+  comunidad: { label: 'Comunidad', desc: 'Clientes, reseñas, preguntas y colaboraciones' },
+  tendencias: { label: 'Tendencias y humor', desc: 'Audios virales, sketches y formatos del momento' },
+  promo: { label: 'Reservas', desc: 'Convertir seguidores en citas' },
+};
+
+const FORMATS = {
+  reel: { label: 'Reel / TikTok' },
+  carrusel: { label: 'Carrusel' },
+  post: { label: 'Foto' },
+  story: { label: 'Stories' },
+  directo: { label: 'Directo' },
+};
+
+const GOALS = {
+  alcance: { label: 'Llegar a gente nueva' },
+  reservas: { label: 'Conseguir reservas' },
+  comunidad: { label: 'Fidelizar y crear comunidad' },
+  autoridad: { label: 'Ser la referencia (autoridad)' },
+};
+
+/** Tipos de contenido que se marcan en cada competidor: la base del análisis de huecos. */
+const CONTENT_TYPES = [
+  { id: 'transformacion', label: 'Antes y después', pillar: 'oficio' },
+  { id: 'proceso', label: 'Proceso en cámara (time-lapse, ASMR, detalle)', pillar: 'oficio' },
+  { id: 'guias', label: 'Guías y carruseles educativos', pillar: 'educacion' },
+  { id: 'consejos', label: 'Consejos y tutoriales en vídeo', pillar: 'educacion' },
+  { id: 'producto', label: 'Productos (uso y recomendaciones)', pillar: 'educacion' },
+  { id: 'historia', label: 'Historia y valores de marca', pillar: 'legado' },
+  { id: 'local', label: 'Ciudad y barrio', pillar: 'sevilla' },
+  { id: 'equipo', label: 'Equipo y detrás de las cámaras', pillar: 'backstage' },
+  { id: 'clientes', label: 'Clientes: testimonios, reacciones, reseñas', pillar: 'comunidad' },
+  { id: 'colabs', label: 'Colaboraciones (deportistas, comercios, creadores)', pillar: 'comunidad' },
+  { id: 'respuestas', label: 'Responder preguntas con vídeo', pillar: 'comunidad' },
+  { id: 'stories', label: 'Stories a diario (huecos, encuestas)', pillar: 'comunidad' },
+  { id: 'directos', label: 'Directos', pillar: 'comunidad' },
+  { id: 'tendencias', label: 'Tendencias y audios virales', pillar: 'tendencias' },
+  { id: 'humor', label: 'Humor y sketches', pillar: 'tendencias' },
+  { id: 'promos', label: 'Promociones, sorteos y tarjetas regalo', pillar: 'promo' },
+];
+/** Orden en que conviene ocupar un hueco: primero lo que más alcance y confianza da. */
+const CT_PRIORITY = ['transformacion', 'proceso', 'clientes', 'guias', 'historia', 'consejos', 'respuestas', 'colabs', 'local', 'equipo', 'humor', 'tendencias', 'stories', 'directos', 'promos', 'producto'];
+
+const DIMENSIONS = [
+  { id: 'visual', label: 'Calidad visual', hint: 'Luz, encuadre, edición y coherencia del perfil',
+    tactic: 'Gana con estética de autor: fondo oscuro, luz cálida lateral, planos macro de la navaja y la misma edición en todo el perfil.' },
+  { id: 'constancia', label: 'Constancia', hint: '¿Publican cada semana o a rachas?',
+    tactic: 'Publican a rachas: con el plan semanal (pestaña III) estarás presente cada semana mientras ellos desaparecen.' },
+  { id: 'comunidad', label: 'Trato con la comunidad', hint: '¿Responden comentarios y mensajes? ¿Comparten a sus clientes?',
+    tactic: 'Responde cada comentario en la primera hora, contesta preguntas con vídeo y comparte las stories en las que te etiquetan.' },
+  { id: 'originalidad', label: 'Originalidad', hint: '¿Tienen formatos propios o copian tendencias?',
+    tactic: 'Copian tendencias sin personalidad: el Legado Imperio (Roma, Itálica, Adriano) es una historia que no pueden copiar.' },
+  { id: 'marca', label: 'Identidad de marca', hint: '¿Se reconoce su perfil sin leer el nombre?',
+    tactic: 'Repite tus códigos —laurel, bronce, numeración romana, «herederos del imperio»— hasta que el perfil se reconozca sin leer el nombre.' },
+];
+
+const TREND_CUTS = ['low fade', 'mid fade', 'taper con flequillo', 'french crop', 'crop texturizado', 'buzz cut', 'mullet moderno', 'side part clásico', 'slick back', 'pompadour', 'burst fade', 'ondas con textura'];
+const BEARD_STYLES = ['barba corta degradada', 'barba completa perfilada', 'barba de tres días bien definida', 'candado', 'barba larga «estilo Adriano»'];
+const STREET_QUESTIONS = ['¿cuánto pagaste por tu último corte?', '¿cada cuánto vas al barbero?', '¿qué es lo que más odias de ir al barbero?', '¿degradado o tijera?', '¿qué corte no te harías nunca?'];
+const MYTHS = ['«Afeitarse hace que la barba salga más fuerte»', '«Cortarse el pelo a menudo hace que crezca más rápido»', '«Lavarse el pelo a diario hace que se caiga»', '«Si te arrancas una cana, salen dos»'];
+const CLIENT_TYPES = ['el que enseña la foto de un futbolista', 'el que se queda dormido', 'el que no para de hablar', 'el que llega tarde y con prisa', 'el que no suelta el móvil', 'el que dice «solo un poquito»'];
+const NEIGHBOURS = ['una tienda de ropa del barrio', 'una sastrería', 'una óptica', 'una zapatería', 'un gimnasio'];
+const EDGES = ['el Legado Imperio (Roma, Itálica y Adriano)', 'el ritual de toalla caliente y navaja', 'la reserva en tres toques por WhatsApp', 'el diagnóstico antes de tocar la tijera'];
+
+/* ---------- Biblioteca de ideas ----------
+   p: pilar · f: formato · g: objetivos · ct: tipo de contenido (para los huecos)
+   s: servicios a los que aplica ('any' = cualquiera; sin s = no menciona servicio)
+   d: dificultad 1–3 · ev: fecha especial · t: título · h: ganchos · steps: guion
+   ost: texto en pantalla · cap: pie de foto · why: por qué funciona · note: aviso
+   Huecos rellenables: {marca} {handle} {barrio} {ciudad} {web} {servicio} {precio}
+   {minutos} {corte} {barba} {meses} {pregunta} {mito} {tipo} {negocio} {evento} */
+
+const TEMPLATES = [
+  // ── I. El oficio ──
+  { id: 'transformacion', p: 'oficio', f: 'reel', g: ['alcance', 'reservas'], ct: 'transformacion', s: ['corte-clasico', 'degradado', 'corte-y-barba'], d: 1,
+    t: 'Transformación: {meses} meses sin pasar por el barbero',
+    h: ['Llevaba {meses} meses sin cortarse el pelo…', 'Llegó diciendo «haz lo que veas» 👀', 'Nadie le reconoció al salir de aquí'],
+    steps: ['Plano frontal del cliente al sentarse, serio: es el «antes». Dos segundos y sin música.', 'Cortes rápidos al ritmo del audio, un segundo por plano: tijera, máquina, navaja, toalla.', 'Transición al «después» con un giro del sillón o un chasquido de dedos.', 'Plano final: se mira al espejo y sonríe. Aguanta dos segundos para que el vídeo se repita.'],
+    ost: '{meses} meses sin barbero → {servicio}',
+    cap: 'De «haz lo que veas» a esto. {servicio} en {marca}: diagnóstico, oficio y cero prisas.',
+    why: 'Las transformaciones son el formato con más alcance para una barbería: el cerebro necesita ver el final, y dejar el «después» para el último segundo dispara la retención.' },
+  { id: 'timelapse', p: 'oficio', f: 'reel', g: ['alcance', 'autoridad'], ct: 'proceso', s: ['degradado'], d: 2,
+    t: 'Un {corte} completo en 30 segundos',
+    h: ['Así se hace un {corte} de verdad', 'Mira la transición de este degradado 👀', '{minutos} minutos de trabajo en 30 segundos'],
+    steps: ['Móvil en trípode fijo a la altura de la nuca; graba el servicio entero.', 'Acelera ×20 en la edición y deja en velocidad real solo el perfilado a navaja.', 'Pon en pantalla el número de máquina de cada fase: la gente lo guarda para pedirlo.', 'Cierra con el cliente girando la cabeza despacio: perfil, nuca, perfil.'],
+    ost: '{corte} · paso a paso',
+    cap: 'Transición limpia, perfilado a navaja y cero prisas. Guárdalo para enseñárselo a tu barbero (o mejor: ven a vernos).',
+    why: 'El time-lapse es hipnótico y se ve varias veces seguidas, algo que el algoritmo premia. Con los números de máquina en pantalla, además, se guarda.' },
+  { id: 'asmr', p: 'oficio', f: 'reel', g: ['alcance', 'autoridad'], ct: 'proceso', s: ['afeitado-imperial', 'ritual-imperio', 'barba'], d: 1,
+    t: 'ASMR: el sonido de un afeitado a navaja',
+    h: ['Sube el volumen 🔊', 'El sonido más relajante de {ciudad}', 'Si esto no te relaja, nada lo hará'],
+    steps: ['Sin música: solo sonido real. Móvil a 20 cm o micro de corbata cerca de la cara.', 'Brocha montando la espuma en plano macro y toalla caliente humeando.', 'La navaja deslizándose por la mejilla: plano muy cerrado, cinco o seis segundos.', 'Final: el cliente con los ojos cerrados y el bálsamo frío. Corta en seco.'],
+    ost: '🔊 {servicio} · solo sonido',
+    cap: '{servicio}: toalla caliente, navaja y bálsamo frío. {minutos} minutos que no te va a dar nadie más.',
+    why: 'El ASMR retiene sin necesidad de texto y vende la experiencia, no solo el resultado: justo lo que justifica vuestro precio frente a las barberías de paso.' },
+  { id: 'perfilado', p: 'oficio', f: 'reel', g: ['autoridad', 'reservas'], ct: 'proceso', s: ['degradado', 'barba', 'cejas-y-detalles'], d: 1,
+    t: 'El detalle que separa un buen corte de uno perfecto',
+    h: ['Fíjate en la línea… ahora', 'El paso que muchas barberías se saltan', 'Por esto tu corte dura más'],
+    steps: ['Plano macro de la línea de la frente o de la barba antes de perfilar.', 'Perfilado a navaja a cámara lenta (si el móvil lo permite, a 120 fps).', 'Pantalla partida: antes y después del perfilado.', 'Remata con la frase: «Los detalles no se ven. Se notan».'],
+    ost: 'Los detalles no se ven. Se notan.',
+    cap: 'Perfilado a navaja en cada {servicio}. Es lo que hace que el corte siga pareciendo recién hecho una semana después.',
+    why: 'Enseña un paso que el cliente no sabía que existía: os coloca como expertos y le da un motivo concreto para elegiros.' },
+  { id: 'cinco-degradados', p: 'oficio', f: 'carrusel', g: ['alcance', 'comunidad'], ct: 'guias', s: ['degradado'], d: 2,
+    t: '5 degradados, 5 personalidades: ¿cuál eres tú?',
+    h: ['¿Cuál eres tú? Dinos el número 👇', 'No todos los degradados son iguales'],
+    steps: ['Portada: cinco miniaturas numeradas y el título «¿Cuál eres tú?».', 'Una diapositiva por estilo —skin, low, mid, taper y burst fade— con una foto vuestra y una línea: para quién es y cada cuánto se repasa.', 'Última: «¿Dudas? Te lo decimos gratis en el diagnóstico» y cómo reservar.'],
+    ost: 'Portada: «5 degradados, 5 personalidades»',
+    cap: 'Skin, low, mid, taper o burst. Dinos tu número en comentarios y te decimos si te favorece 👇',
+    why: 'Los carruseles de «elige tu número» disparan comentarios y guardados, las dos señales que más empujan una publicación en Instagram.' },
+  { id: 'reaccion', p: 'oficio', f: 'reel', g: ['comunidad', 'alcance'], ct: 'clientes', s: 'any', d: 1,
+    t: 'Su cara al verse en el espejo',
+    h: ['Su cara lo dice todo', 'Esperad a ver su reacción', 'No se lo esperaba'],
+    steps: ['Pide permiso antes de empezar y trabaja con el sillón de espaldas al espejo.', 'Tres o cuatro planos rápidos del proceso.', 'Giro del sillón hacia el espejo: graba la reacción entera, sin cortar.', 'Texto final con el nombre del servicio.'],
+    ost: 'Esperad a ver su cara…',
+    cap: 'Lo mejor de este oficio es este momento. {servicio} en {marca}.',
+    why: 'La emoción real vale más que cualquier producción: se comparte y la comenta el círculo del cliente, que son vuestros próximos clientes.' },
+  { id: 'rescate', p: 'oficio', f: 'reel', g: ['autoridad', 'alcance'], ct: 'transformacion', s: ['degradado', 'corte-clasico'], d: 2,
+    t: 'Rescate: arreglamos un corte que salió mal',
+    h: ['Vino a que le arregláramos esto…', 'Misión: salvar este degradado', '¿Se puede arreglar? Vamos a verlo'],
+    steps: ['Enseña el problema sin mostrar la cara (con permiso del cliente).', 'Explica en una frase qué vas a hacer: «igualar laterales y bajar la transición».', 'Proceso en planos rápidos.', 'Resultado final y frase de cierre.'],
+    ost: 'Misión rescate ✂️',
+    cap: 'Todos hemos salido mal de algún sitio. Para eso estamos.',
+    note: 'Nunca nombres ni critiques a otra barbería: el protagonista es la solución.',
+    why: 'Demuestra pericia y empatía a la vez, y engancha porque plantea un reto con final feliz.' },
+  { id: 'barba-transformacion', p: 'oficio', f: 'reel', g: ['alcance', 'reservas'], ct: 'transformacion', s: ['barba', 'corte-y-barba'], d: 1,
+    t: 'De barba descuidada a {barba}',
+    h: ['Esta barba pedía ayuda a gritos', 'Una barba bien perfilada cambia la cara entera'],
+    steps: ['Plano de la barba sin arreglar, de frente y de perfil.', 'Rebaje, diseño y perfilado a navaja en planos de un segundo.', 'Toalla caliente y aceite: plano lento.', 'Resultado de frente y de perfil, con la misma luz que el «antes».'],
+    ost: 'Antes → {barba}',
+    cap: '{servicio}: diseño, rebaje y perfilado a navaja. Tu cara, mejor enmarcada.',
+    why: 'Las transformaciones de barba son más rápidas de grabar que las de pelo y el cambio se ve igual de claro.' },
+  { id: 'busto', p: 'oficio', f: 'carrusel', g: ['autoridad', 'alcance'], ct: 'transformacion', s: 'any', d: 2,
+    t: 'Retrato «busto romano»: el resultado como una escultura',
+    h: ['Cada cliente sale como un emperador', 'Nuestra firma: el busto'],
+    steps: ['Tras el servicio, foto de perfil del cliente en blanco y negro, mirando al frente como un busto.', 'Fondo oscuro (mármol negro si lo tenéis) y una sola luz lateral cálida.', 'Carrusel: perfil izquierdo, nuca, perfil derecho y detalle.', 'Hazlo siempre igual: se convierte en la firma visual del perfil.'],
+    ost: 'Serie «Bustos del Imperio» · N.º …',
+    cap: 'Bustos del Imperio, n.º {meses}. {servicio}.',
+    why: 'Una serie con estética fija hace vuestro perfil reconocible a primera vista en un feed lleno de fotos iguales de barberías.' },
+  { id: 'pov-barbero', p: 'oficio', f: 'reel', g: ['alcance'], ct: 'proceso', s: 'any', d: 2,
+    t: 'POV: eres el barbero',
+    h: ['POV: eres barbero en {ciudad} y entra este cliente…', 'Así se ve un degradado desde mis ojos'],
+    steps: ['Cámara en el pecho o en la frente: plano subjetivo.', 'Graba el inicio, la parte más técnica y el final.', 'Voz en off contando qué piensas en cada fase.'],
+    ost: 'POV: eres el barbero',
+    cap: 'Lo que pasa por la cabeza de un barbero durante un {servicio}.',
+    why: 'El punto de vista subjetivo es inmersivo y poco habitual: se ve hasta el final por curiosidad.' },
+
+  // ── II. Legado Imperio ──
+  { id: 'romanos-afeitado', p: 'legado', f: 'reel', g: ['alcance', 'autoridad'], ct: 'historia', s: ['afeitado-imperial'], d: 2,
+    t: 'Así iban al barbero los romanos hace 2.000 años',
+    h: ['Hace 2.000 años, ir al barbero ya era un plan', '¿Cómo se afeitaba un romano sin cuchillas?'],
+    steps: ['Gancho a cámara con la navaja en la mano.', 'Tres datos con texto en pantalla: el barbero se llamaba «tonsor», la navaja «novacula» y la barbería era el punto de encuentro del barrio.', 'Corte a vuestro afeitado: «Hoy lo hacemos igual de en serio, pero con toalla caliente».', 'Cierre: «En {ciudad}, a 9 km de Itálica».'],
+    ost: 'Roma, siglo I · {ciudad}, hoy',
+    cap: 'Los romanos convirtieron la barbería en un lugar de encuentro. Dos mil años después seguimos con la tradición. {servicio}: {precio}.',
+    why: 'Ninguna barbería de la competencia puede contar esta historia con credibilidad: es educativo, entretenido y 100 % de marca.' },
+  { id: 'adriano', p: 'legado', f: 'carrusel', g: ['alcance', 'autoridad'], ct: 'historia', s: ['barba', 'corte-y-barba'], d: 1,
+    t: 'Adriano: el emperador que puso de moda la barba',
+    h: ['El primer emperador con barba tenía raíces sevillanas', 'Si llevas barba, dale las gracias a este señor'],
+    steps: ['Portada: busto de Adriano y «El primer emperador con barba».', 'Contexto: antes de él, los emperadores iban afeitados.', 'Su familia era de Itálica, a 9 km de {ciudad}.', 'Tras él, sus sucesores también la llevaron: la barba se volvió símbolo de poder.', 'Cierre: vuestra barba «estilo Adriano» y cómo reservar.'],
+    ost: 'Adriano · 117 d. C.',
+    cap: 'Antes de Adriano, los emperadores iban afeitados. Después, la barba fue poder. {servicio}: {precio}.',
+    note: 'Usa imágenes de bustos de dominio público o haz tú la foto; no publiques fotos de terceros sin permiso.',
+    why: 'Une historia local, orgullo sevillano y vuestro servicio: es el tipo de contenido que se guarda y se envía por WhatsApp.' },
+  { id: 'trajano', p: 'legado', f: 'reel', g: ['alcance', 'autoridad'], ct: 'historia', s: ['corte-clasico', 'degradado'], d: 2,
+    t: 'El primer emperador nacido fuera de Italia era de aquí al lado',
+    h: ['El hombre más poderoso del mundo nació a 9 km de este sillón', 'Su corte tiene 1.900 años y lo seguimos haciendo'],
+    steps: ['Gancho a cámara, en el sillón.', 'Trajano nació en Itálica, junto a {ciudad}, y llegó a emperador en el año 98.', 'En sus bustos lleva el pelo corto con flequillo hacia delante: el abuelo del french crop.', 'Corte a un cliente con french crop: «Corte de emperador, versión actual».'],
+    ost: 'Trajano · Itálica · año 98',
+    cap: 'El corte de Trajano, 1.900 años después. Pídelo como {servicio}.',
+    why: 'Dato sorprendente + orgullo local + un corte que está de moda: tres motivos para compartirlo.' },
+  { id: 'depositio', p: 'legado', f: 'reel', g: ['reservas', 'comunidad'], ct: 'historia', s: ['afeitado-imperial'], d: 2,
+    t: 'Depositio barbae: el primer afeitado, como un romano',
+    h: ['En Roma, el primer afeitado era una fiesta', '¿Tu primer afeitado a navaja? Que sea así'],
+    steps: ['Explica en una frase: en Roma, el primer afeitado de un joven se celebraba como un rito de paso.', 'Graba el primer afeitado a navaja de un cliente joven (mayor de edad y con permiso).', 'Reacción final y foto de «certificado».', 'Propuesta: «Primer afeitado imperial», una experiencia para regalar.'],
+    ost: 'Su primer afeitado a navaja',
+    cap: 'En Roma lo llamaban depositio barbae. Aquí, {servicio}. Una experiencia para regalar.',
+    why: 'Convierte un servicio en un rito con historia: emociona, lo comparte la familia y se vende fácil como regalo.' },
+  { id: 'caesar-cut', p: 'legado', f: 'carrusel', g: ['autoridad', 'alcance'], ct: 'guias', s: ['corte-clasico', 'degradado'], d: 1,
+    t: 'El «Caesar cut» existe (y se llama así por Julio César)',
+    h: ['Este corte tiene 2.000 años y sigue de moda', '¿Sabías que este corte se llama así por Julio César?'],
+    steps: ['Portada: busto romano frente a un cliente con el mismo corte.', 'El corte César: corto y con flequillo recto hacia delante.', 'Su versión moderna: french crop con degradado.', 'Para quién funciona: entradas, frente amplia, pelo fino.', 'Cierre: «Pídelo como un emperador».'],
+    ost: 'De Roma a {ciudad}: el corte César',
+    cap: 'Dos mil años y sigue funcionando. ¿Te atreves? Pide tu {servicio}.',
+    why: 'Mezcla tendencia e historia: educa, entretiene y solo encaja en vuestra marca.' },
+  { id: 'italica', p: 'legado', f: 'reel', g: ['alcance'], ct: 'local', d: 3,
+    t: 'Del sillón al anfiteatro: 9 km',
+    h: ['Aquí nacieron emperadores', 'A 9 km de nuestra barbería…'],
+    steps: ['Graba a un cliente recién cortado (o al equipo) llegando a Itálica, en Santiponce.', 'Planos lentos entre las ruinas del anfiteatro con música épica.', 'Texto: «Aquí nacieron emperadores. A 9 km, los peinamos».', 'Cierre en la barbería con el mismo cliente.'],
+    ost: 'Aquí nacieron emperadores.',
+    cap: 'Itálica, cuna de Trajano. A 9 km, {marca}.',
+    note: 'Consulta con el Conjunto Arqueológico de Itálica si necesitas permiso para grabar con fines comerciales.',
+    why: 'Es una pieza de marca que nadie más puede hacer: os asocia para siempre con la historia de la ciudad.' },
+  { id: 'por-que-imperio', p: 'legado', f: 'reel', g: ['comunidad', 'autoridad'], ct: 'historia', d: 1,
+    t: '¿Por qué nos llamamos {marca}?',
+    h: ['Nos preguntan mucho por el nombre…', 'Nuestro nombre tiene 2.000 años de historia'],
+    steps: ['El dueño a cámara, sentado en el sillón, plano medio.', 'La historia en 30 segundos: {ciudad}, Itálica, Trajano, Adriano y la barba como símbolo.', 'Qué significa para vosotros: oficio sin prisas y cada cliente tratado como un emperador.', 'Cierre: «Bienvenido al Imperio».'],
+    ost: '¿Por qué «Imperio»?',
+    cap: 'Un nombre con 2.000 años de historia y una promesa: aquí nadie sale con prisas.',
+    why: 'Los vídeos de origen humanizan la marca y fidelizan: la gente sigue a personas, no a logotipos.' },
+  { id: 'leyes', p: 'legado', f: 'carrusel', g: ['autoridad', 'comunidad'], ct: 'historia', d: 1,
+    t: 'Las 7 leyes de {marca}',
+    h: ['Aquí hay leyes. Y se cumplen.', 'Las 7 leyes del Imperio'],
+    steps: ['Portada en estilo inscripción romana: «Las VII leyes del Imperio».', 'I. Nadie sale con prisas. II. Diagnóstico antes de tocar la tijera. III. Toalla caliente siempre. IV. Navaja en cada perfilado. V. Puntualidad imperial. VI. Consejo para casa. VII. Si no te convence, lo arreglamos.', 'Última: «¿Cuál valoras más?».'],
+    ost: 'Las VII leyes del Imperio',
+    cap: 'Siete leyes que cumplimos con cada cliente. ¿Cuál es la que más valoras?',
+    why: 'Convierte vuestros valores en algo visual y guardable, y os compromete en público con un estándar que la competencia no se atreve a prometer.' },
+
+  // ── III. Sevilla ──
+  { id: 'barrios', p: 'sevilla', f: 'reel', g: ['alcance', 'comunidad'], ct: 'humor', d: 2,
+    t: 'Cómo pide el corte alguien de cada barrio de {ciudad}',
+    h: ['Dime de qué barrio eres y te digo qué corte pides', 'Triana, Nervión, el Centro… y el corte que pide cada uno'],
+    steps: ['Sketch con el mismo barbero y tres o cuatro «clientes» (o el mismo con distinta ropa).', 'Cada uno pide el corte con un tópico simpático de su barrio.', 'Cierre: «¿Y tú de dónde eres? Te leemos 👇».'],
+    ost: 'El corte según tu barrio',
+    cap: '¿Cuál eres tú? Etiqueta al de tu barrio 👇',
+    note: 'Humor siempre amable: nada que pueda ofender a un barrio.',
+    why: 'El humor local es de lo más compartido: cada vecino etiqueta a sus amigos y el algoritmo lo enseña a gente de vuestra zona, que es justo vuestro público.' },
+  { id: 'calle', p: 'sevilla', f: 'reel', g: ['alcance'], ct: 'local', d: 2,
+    t: 'Preguntamos por la calle: {pregunta}',
+    h: ['Preguntamos en {barrio}: {pregunta}', 'Nadie esperaba esta respuesta'],
+    steps: ['Sal a la calle en {barrio} con un micro y algo con vuestro logo a la vista.', 'Tres a cinco respuestas rápidas y espontáneas (pide permiso para publicar).', 'Cierre: tu respuesta como barbero y la invitación a probar.'],
+    ost: '{pregunta}',
+    cap: 'Salimos a preguntar por {barrio}. ¿Tú qué habrías contestado?',
+    why: 'Las entrevistas callejeras se ven hasta el final por curiosidad y salen caras del barrio: alcance local casi asegurado.' },
+  { id: 'derbi', p: 'sevilla', f: 'reel', g: ['alcance', 'comunidad'], ct: 'humor', d: 2,
+    t: 'Sevillista o bético: el corte lo decide',
+    h: ['Dos sillones, dos equipos, un barbero', 'El derbi se juega en la barbería'],
+    steps: ['Dos clientes, uno de cada equipo, en dos sillones.', 'Pique sano mientras se cortan; el barbero hace de árbitro.', 'Final: «Aquí todos salen campeones».'],
+    ost: 'Derbi en la barbería ⚽',
+    cap: 'Aquí no hay colores: todos salen campeones. ¿De qué equipo eres? 👇',
+    note: 'Neutral y con humor: la idea es que lo compartan los dos bandos.',
+    why: 'El derbi parte la ciudad en dos mitades que comentan, discuten y comparten: alcance local garantizado.' },
+  { id: 'ruta', p: 'sevilla', f: 'carrusel', g: ['alcance', 'comunidad'], ct: 'colabs', d: 2,
+    t: '5 sitios de {barrio} para ir recién cortado',
+    h: ['Recién cortado y sin plan: apunta', 'Nuestra guía de {barrio}'],
+    steps: ['Elige cinco negocios cercanos: bar, café, tienda de ropa, gimnasio y restaurante.', 'Una foto por sitio y una línea de por qué ir.', 'Etiquétalos y avísales: casi todos lo compartirán.', 'Cierre: «Y antes, pasa por {marca}».'],
+    ost: 'Guía {marca}: {barrio}',
+    cap: 'Cinco sitios de {barrio} para lucir el corte. ¿Cuál añadirías?',
+    why: 'Cada negocio etiquetado os enseña a su público del barrio. Colaborar con vecinos es el alcance local más barato que existe.' },
+  { id: 'frases-sevilla', p: 'sevilla', f: 'reel', g: ['alcance', 'comunidad'], ct: 'humor', d: 1,
+    t: 'Frases que solo oirás en una barbería de {ciudad}',
+    h: ['Si has dicho alguna, eres de {ciudad}', 'Frases típicas en nuestra barbería'],
+    steps: ['Una frase por plano, dicha por clientes o por el equipo: «Déjamelo como la última vez, pero distinto», «Con esta calor no se puede ni salir», «Ponme guapo que tengo boda»…', 'Ritmo rápido, un segundo y medio por frase.', 'Cierre: «¿Cuál nos falta?».'],
+    ost: 'Frases típicas de barbería sevillana',
+    cap: '¿Cuál has dicho tú? Y ¿cuál nos falta? 👇',
+    why: 'Identificación pura: la gente se reconoce, comenta su frase y lo comparte.' },
+  { id: 'veterano', p: 'sevilla', f: 'reel', g: ['comunidad'], ct: 'clientes', d: 2,
+    t: '{barrio} hace 40 años, contado desde nuestro sillón',
+    h: ['Le preguntamos a nuestro cliente más veterano cómo era esto antes', 'Así era ir al barbero en los 80'],
+    steps: ['Un cliente mayor en el sillón, con su permiso.', 'Preguntas: cómo era el barrio, cuánto costaba un corte, cuál era su barbero de siempre.', 'Planos del barrio actual mientras habla.', 'Cierre con su corte terminado.'],
+    ost: '{barrio}, hace 40 años',
+    cap: 'Las mejores historias del barrio se cuentan en el sillón.',
+    why: 'La nostalgia emociona a todas las edades y os presenta como la barbería del barrio, no una más.' },
+
+  // ── IV. Educación ──
+  { id: 'cara-corte', p: 'educacion', f: 'carrusel', g: ['alcance', 'autoridad'], ct: 'guias', d: 2,
+    t: 'Qué corte te favorece según la forma de tu cara',
+    h: ['Tu cara elige tu corte', 'Por esto ese corte no te queda como al de la foto'],
+    steps: ['Portada: «Tu cara elige tu corte» con cinco siluetas.', 'Una diapositiva por forma —ovalada, redonda, cuadrada, alargada y triangular— con qué favorece y qué evitar.', 'Última: «¿No sabes cuál es la tuya? Te lo decimos en el diagnóstico».'],
+    ost: 'Tu cara elige tu corte',
+    cap: 'Guárdalo y enséñaselo a tu barbero. ¿Cuál es tu forma de cara? 👇',
+    why: 'Es de los contenidos más guardados del sector y os posiciona como asesores, no solo como ejecutores.' },
+  { id: 'errores', p: 'educacion', f: 'reel', g: ['alcance', 'autoridad'], ct: 'consejos', d: 1,
+    t: '3 errores al pedir un corte (y cómo pedirlo bien)',
+    h: ['Si le dices esto a tu barbero, vas mal', 'Deja de decir «solo las puntas»'],
+    steps: ['Error 1: «haz lo que veas» sin referencia → lleva dos fotos.', 'Error 2: hablar en números de máquina sin saber qué significan → di cuánto quieres quitar o enseña una foto.', 'Error 3: no contar cómo te peinas a diario → cuéntalo: cambia el corte.', 'Cierre: «En el diagnóstico te ayudamos a pedirlo».'],
+    ost: '3 errores al pedir un corte',
+    cap: 'El 80 % de los cortes que no gustan se deciden antes de empezar. Guárdalo para tu próxima cita.',
+    why: 'Resuelve un problema real y frecuente: se guarda y se envía al amigo que siempre sale mal del barbero.' },
+  { id: 'peinar-casa', p: 'educacion', f: 'reel', g: ['autoridad', 'comunidad'], ct: 'consejos', d: 1,
+    t: 'Cómo peinar un {corte} en casa en 60 segundos',
+    h: ['En la barbería te queda genial y en casa no: esto es lo que falla', 'El truco para que el {corte} dure'],
+    steps: ['Pelo húmedo, secado con toalla a toques.', 'Producto: la cantidad real (como un garbanzo) y cómo repartirlo de atrás hacia delante.', 'Secador: dirección y temperatura.', 'Resultado y el error más común a evitar.'],
+    ost: '{corte} en 60 s',
+    cap: 'Para que en casa te quede como al salir de {marca}. Guárdalo.',
+    why: 'El cliente vuelve a veros cada mañana delante del espejo: es fidelización pura y además atrae a gente con ese corte.' },
+  { id: 'cada-cuanto', p: 'educacion', f: 'carrusel', g: ['reservas', 'autoridad'], ct: 'guias', d: 1,
+    t: '¿Cada cuánto deberías cortarte el pelo?',
+    h: ['Si tu degradado tiene un mes, ya no es un degradado', '¿Cada cuánto hay que ir al barbero?'],
+    steps: ['Degradado: cada 2–3 semanas.', 'Corte clásico a tijera: cada 4–5 semanas.', 'Barba perfilada: cada 1–2 semanas.', 'Pelo largo: sanear cada 8–10 semanas.', 'Cierre: «Socios del Club: no tenéis que acordaros, os guardamos el hueco».'],
+    ost: '¿Cada cuánto?',
+    cap: 'Guárdalo y pon la alarma. O mejor: hazte socio del Club y no te preocupes más.',
+    why: 'Educa sobre la frecuencia de visita, que es justo lo que hace crecer la facturación sin captar clientes nuevos.' },
+  { id: 'rutina-barba', p: 'educacion', f: 'reel', g: ['autoridad', 'comunidad'], ct: 'consejos', s: ['barba'], d: 1,
+    t: 'Rutina de barba en 2 minutos al día',
+    h: ['Tu barba pica por esto', '2 minutos al día y tu barba cambia'],
+    steps: ['Lavar con jabón específico (el champú la reseca).', 'Aceite con la barba húmeda: tres gotas, de la piel hacia fuera.', 'Cepillo o peine para orientarla.', 'Bálsamo para fijar. Y perfilado cada una o dos semanas.'],
+    ost: 'Rutina de barba · 2 min',
+    cap: 'La barba también se cuida en casa. Lo demás lo hacemos nosotros: {servicio}, {precio}.',
+    why: 'Consejo práctico y rápido: se guarda, os da autoridad y abre la puerta a vender producto.' },
+  { id: 'productos', p: 'educacion', f: 'carrusel', g: ['autoridad'], ct: 'producto', d: 1,
+    t: 'Cera, pomada, arcilla o polvo: ¿cuál usar?',
+    h: ['Llevas años usando el producto equivocado', 'Cera, pomada, arcilla o polvo'],
+    steps: ['Una diapositiva por producto: acabado (brillo o mate), fijación y para qué pelo.', 'Foto de cada uno sobre el mármol o la encimera.', 'Última: «¿Dudas? Pregúntanos en tu próxima cita».'],
+    ost: '¿Qué producto es el tuyo?',
+    cap: 'Brillo o mate, fijación alta o natural. Guárdalo antes de comprar el próximo.',
+    why: 'Resuelve una duda constante y prepara la venta de producto en el local.' },
+  { id: 'mito', p: 'educacion', f: 'reel', g: ['alcance', 'comunidad'], ct: 'consejos', d: 1,
+    t: '¿Mito o verdad? {mito}',
+    h: ['{mito}. ¿Mito o verdad?', 'Llevas toda la vida creyéndote esto'],
+    steps: ['Gancho: enuncia el mito con cara de duda.', 'Veredicto en dos segundos: sello de «MITO» en pantalla.', 'Explicación sencilla de 15 segundos.', 'Cierre: «¿Qué otro mito desmontamos? Te leemos».'],
+    ost: '¿Mito o verdad?',
+    cap: 'Desmontado. ¿Qué otro mito de barbería quieres que aclaremos?',
+    why: 'Formato serie: se puede repetir cada semana y cada vídeo genera comentarios con el siguiente mito.' },
+  { id: 'diccionario', p: 'educacion', f: 'carrusel', g: ['autoridad', 'alcance'], ct: 'guias', d: 1,
+    t: 'Diccionario para hablar con tu barbero',
+    h: ['¿Fade o taper? Aprende a pedirlo', 'Habla como un barbero'],
+    steps: ['Fade frente a taper: dónde termina la transición.', 'Números de máquina: el 1 son 3 mm, el 2 son 6 mm, el 3 son 9 mm…', 'Texturizado, desfilado y perfilado: qué es cada cosa.', 'Última: «Y si no te acuerdas, enséñanos una foto».'],
+    ost: 'Diccionario del barbero',
+    cap: 'Guárdalo y no vuelvas a quedarte en blanco en el sillón.',
+    why: 'Contenido de referencia que la gente guarda y consulta: alarga la vida de la publicación durante meses.' },
+  { id: 'afeitado-casa', p: 'educacion', f: 'reel', g: ['autoridad'], ct: 'consejos', s: ['afeitado-imperial'], d: 1,
+    t: 'Cómo afeitarte en casa sin irritación',
+    h: ['Si te salen granitos al afeitarte, mira esto', '4 pasos para un afeitado sin irritación'],
+    steps: ['Prepara la piel con agua caliente (o después de la ducha).', 'Cuchilla nueva y a favor del pelo.', 'Agua fría para cerrar.', 'Bálsamo sin alcohol. Y para el afeitado perfecto, el nuestro.'],
+    ost: 'Afeitado sin irritación',
+    cap: 'Para el día a día, esto. Para un día especial, {servicio}.',
+    why: 'Problema muy común, solución clara y una invitación natural a vuestro servicio estrella.' },
+  { id: 'barba-cara', p: 'educacion', f: 'carrusel', g: ['alcance', 'autoridad'], ct: 'guias', s: ['barba', 'corte-y-barba'], d: 2,
+    t: 'La barba que te favorece según tu cara',
+    h: ['No toda barba le queda bien a toda cara', '¿Qué barba es la tuya?'],
+    steps: ['Portada con cuatro siluetas.', 'Cara redonda, cuadrada, alargada y ovalada: qué barba equilibra cada una.', 'Última: «Diseñamos la tuya en el {servicio}».'],
+    ost: '¿Qué barba es la tuya?',
+    cap: 'Guárdalo y, si dudas, te asesoramos en el sillón.',
+    why: 'Igual que la guía de cortes, pero para barba: la competencia casi nunca la hace y se guarda muchísimo.' },
+  { id: 'tres-peinados', p: 'educacion', f: 'reel', g: ['alcance', 'autoridad'], ct: 'consejos', s: ['corte-clasico', 'degradado'], d: 2,
+    t: 'Un corte, tres peinados: diario, finde y boda',
+    h: ['El mismo corte, tres looks', 'Un corte bien hecho se peina de tres formas'],
+    steps: ['Mismo cliente y mismo corte.', 'Look 1: natural para el día a día. Look 2: texturizado para el finde. Look 3: repeinado para una boda.', 'Transición entre looks con un giro de cabeza.', 'Cierre: «Un buen corte se adapta a tu vida».'],
+    ost: '1 corte · 3 looks',
+    cap: '¿Cuál te quedas: 1, 2 o 3? 👇',
+    why: 'Muestra versatilidad y genera comentarios eligiendo número. Además vende el valor de un corte bien pensado.' },
+  { id: 'entradas', p: 'educacion', f: 'reel', g: ['alcance', 'autoridad'], ct: 'consejos', s: ['corte-clasico', 'degradado'], d: 1,
+    t: 'Cortes que disimulan las entradas (y cuáles las marcan)',
+    h: ['Si tienes entradas, esto es para ti', 'Deja de hacerte este corte si tienes entradas'],
+    steps: ['Lo que las marca: laterales largos y raya muy alta.', 'Lo que ayuda: laterales cortos, textura arriba y flequillo hacia delante.', 'Ejemplo real de un cliente (con permiso).', 'Cierre: «Te asesoramos sin compromiso».'],
+    ost: 'Entradas: lo que sí y lo que no',
+    cap: 'Con el corte adecuado se notan mucho menos. Pregúntanos sin compromiso.',
+    why: 'Habla de una preocupación muy común con tacto y soluciones: genera confianza y mensajes privados.' },
+
+  // ── V. Detrás del sillón ──
+  { id: 'un-dia', p: 'backstage', f: 'reel', g: ['comunidad', 'alcance'], ct: 'equipo', d: 1,
+    t: 'Un día en {marca} en 30 segundos',
+    h: ['Así es un día en nuestra barbería', '10 horas en 30 segundos'],
+    steps: ['Subir la persiana, café y música.', 'Toallas al calentador, navajas listas.', 'Primer cliente, la hora punta de la tarde y risas.', 'Cierre: barrer, luz baja y persiana abajo.'],
+    ost: 'Un día en {marca}',
+    cap: 'Lo que no se ve detrás de cada corte.',
+    why: 'Humaniza la marca y es fácil de grabar: el móvil apoyado en distintos rincones durante el día basta.' },
+  { id: 'conoce', p: 'backstage', f: 'reel', g: ['comunidad'], ct: 'equipo', d: 1,
+    t: 'Conoce al barbero: 5 preguntas rápidas',
+    h: ['¿Quién te corta el pelo?', 'Cinco preguntas, cero tiempo para pensar'],
+    steps: ['Plano medio en el sillón, preguntas en pantalla.', 'Corte favorito · el peor que le han pedido · canción del sillón · el consejo que siempre da · ¿Sevilla o Betis?', 'Respuestas rápidas y naturales.'],
+    ost: 'Conoce al barbero',
+    cap: 'Cada semana, uno del equipo. ¿Qué le preguntarías tú?',
+    why: 'La gente reserva con personas: conocer al barbero antes de ir quita miedo y crea vínculo.' },
+  { id: 'antes-llegues', p: 'backstage', f: 'reel', g: ['autoridad'], ct: 'equipo', d: 1,
+    t: 'Lo que pasa antes de que llegues',
+    h: ['Tu cita empieza mucho antes de que llegues', 'Esto no lo ves, pero lo notas'],
+    steps: ['Afilar y desinfectar la navaja.', 'Toallas al calentador.', 'Puesto limpio y ordenado.', 'Cierre: el cliente entra por la puerta.'],
+    ost: 'Antes de que llegues…',
+    cap: 'Cada cita empieza antes de que llegues. Así trabajamos en {marca}.',
+    why: 'Transmite cuidado y profesionalidad sin decirlo: el cliente entiende lo que paga.' },
+  { id: 'higiene', p: 'backstage', f: 'reel', g: ['autoridad', 'reservas'], ct: 'equipo', d: 1,
+    t: 'Lo que no se ve: higiene y esterilización',
+    h: ['¿Sabes si tu barbero esteriliza la navaja?', 'Lo que deberías exigir en cualquier barbería'],
+    steps: ['Cuchilla nueva para cada cliente, a la vista.', 'Desinfección de peines y máquinas.', 'Capa y toalla limpias en cada servicio.', 'Cierre: «Tu piel, en buenas manos».'],
+    ost: 'Higiene imperial',
+    cap: 'Cuchilla nueva, herramientas desinfectadas y toalla limpia en cada cita. Sin excepciones.',
+    note: 'Habla de vuestros estándares, nunca de lo que hacen mal otros.',
+    why: 'Es una preocupación real y casi nadie la enseña: os diferencia por confianza, no por precio.' },
+  { id: 'herramientas', p: 'backstage', f: 'carrusel', g: ['autoridad', 'comunidad'], ct: 'equipo', d: 1,
+    t: 'Nuestras herramientas y su historia',
+    h: ['Cada herramienta tiene su historia', 'Esta tijera tiene más años que tú'],
+    steps: ['Una foto cenital por herramienta sobre el mármol: navaja, tijera, máquina, brocha.', 'Una línea por cada una: para qué sirve y una anécdota.', 'Última: «¿Cuál te sorprende más?».'],
+    ost: 'Las armas del Imperio',
+    cap: 'Las armas del Imperio. ¿Cuál te sorprende más?',
+    why: 'Estético, fácil de hacer y muy de marca: el plano cenital sobre mármol es reconocible al instante.' },
+  { id: 'bloopers', p: 'backstage', f: 'reel', g: ['comunidad', 'alcance'], ct: 'humor', d: 1,
+    t: 'Lo que no sale en nuestros vídeos',
+    h: ['Lo que no veis en nuestros reels', 'Toma 14…'],
+    steps: ['Recopila los fallos de grabación del mes.', 'Montaje rápido con música divertida.', 'Cierre: «Y aun así, los cortes salen perfectos».'],
+    ost: 'Tomas falsas',
+    cap: 'Los cortes, perfectos. Los vídeos… lo intentamos.',
+    why: 'Las tomas falsas humanizan y casi no cuestan nada: aprovechan el material que ya tienes.' },
+  { id: 'como-empece', p: 'backstage', f: 'reel', g: ['comunidad', 'autoridad'], ct: 'historia', d: 1,
+    t: 'Cómo empecé a cortar el pelo',
+    h: ['El primer corte que hice salió fatal', 'Nadie creía que esto iba a salir bien'],
+    steps: ['A cámara, plano cercano y tono honesto.', 'El primer corte, la primera barbería, el momento en que decidiste montar la tuya.', 'Fotos antiguas si las hay.', 'Cierre: «Y aquí seguimos, cada día mejor».'],
+    ost: 'Cómo empezó todo',
+    cap: 'Cada sillón tiene una historia. Esta es la nuestra.',
+    why: 'Las historias de origen generan vínculo y comentarios de apoyo; el algoritmo las reparte bien entre los seguidores.' },
+
+  // ── VI. Comunidad ──
+  { id: 'cliente-mes', p: 'comunidad', f: 'post', g: ['comunidad'], ct: 'clientes', s: 'any', d: 1,
+    t: 'Cliente del mes en {marca}',
+    h: ['Él es nuestro cliente del mes', 'Un mes más, fiel al Imperio'],
+    steps: ['Retrato del cliente con su corte (con permiso) y un detalle: su frase o su anécdota.', 'Pequeño premio: producto o un servicio gratis.', 'Etiquétalo para que lo comparta.'],
+    ost: 'Cliente del mes',
+    cap: 'Cliente del mes: gracias por confiar en nosotros cada mes. Este {servicio} va por la casa.',
+    why: 'Premia la fidelidad en público, el cliente lo comparte con su gente y otros quieren ser los siguientes.' },
+  { id: 'testimonios', p: 'comunidad', f: 'reel', g: ['reservas', 'autoridad'], ct: 'clientes', d: 1,
+    t: '«¿Por qué vienes aquí?»: responden los clientes',
+    h: ['Le preguntamos a nuestros clientes por qué vuelven', 'No lo decimos nosotros'],
+    steps: ['Misma pregunta a cinco clientes al terminar.', 'Respuestas de tres a cinco segundos cada una.', 'Cierre con el logo y cómo reservar.'],
+    ost: '¿Por qué vienes aquí?',
+    cap: 'No lo decimos nosotros. Gracias a todos los que volvéis.',
+    why: 'La prueba social es lo que más convierte: alguien que duda entre dos barberías elige la que tiene clientes contentos dando la cara.' },
+  { id: 'deportista', p: 'comunidad', f: 'reel', g: ['alcance'], ct: 'colabs', s: ['degradado', 'corte-y-barba'], d: 3,
+    t: 'Cortamos a un deportista de {ciudad}',
+    h: ['Hoy en el sillón: jugador del…', 'Antes del partido, por {marca}'],
+    steps: ['Contacta con un jugador de un club local (fútbol, baloncesto, boxeo, pádel).', 'Graba el corte con una charla sobre su próximo partido.', 'Publicación en colaboración (función «Invitar colaborador»).', 'Cierre: el corte en el campo o en el gimnasio.'],
+    ost: 'Listo para el partido',
+    cap: 'Preparado para el partido. Gracias por confiar en {marca}.',
+    why: 'La publicación en colaboración aparece en los dos perfiles: os presenta a su afición, que suele ser muy local.' },
+  { id: 'responder', p: 'comunidad', f: 'reel', g: ['comunidad', 'autoridad'], ct: 'respuestas', d: 1,
+    t: 'Respondemos tu pregunta con vídeo',
+    h: ['Nos preguntaste esto… y aquí va la respuesta', 'Respuesta a @…'],
+    steps: ['Elige una pregunta de un comentario o mensaje.', 'Usa «Responder con reel» para que salga la pregunta en pantalla.', 'Contéstala con un ejemplo real en el sillón.', 'Cierre: «Seguid preguntando».'],
+    ost: 'Pregunta de @…',
+    cap: 'Gracias por la pregunta. ¿Cuál es la tuya?',
+    why: 'Premia al que comenta (y anima a otros a hacerlo) y nunca te quedas sin ideas: tus seguidores te las dan.' },
+  { id: 'padre-hijo', p: 'comunidad', f: 'reel', g: ['comunidad', 'reservas'], ct: 'clientes', s: ['corte-infantil'], d: 2,
+    t: 'Padre e hijo, mismo sillón',
+    h: ['Mismo sillón, dos generaciones', 'El heredero del imperio'],
+    steps: ['Primero el hijo (con permiso de los padres), luego el padre, o los dos a la vez.', 'Planos de complicidad: el padre mirando, el niño en el espejo.', 'Foto final juntos con el mismo estilo.'],
+    ost: 'Los herederos del imperio',
+    cap: 'Los herederos del imperio. {servicio}: {precio}.',
+    why: 'Emoción, familia y un servicio poco explotado: lo comparte toda la familia.' },
+  { id: 'encuesta', p: 'comunidad', f: 'story', g: ['comunidad'], ct: 'stories', d: 1,
+    t: 'Encuesta: elige el próximo corte que publicamos',
+    h: ['Vosotros decidís', '¿Cuál queréis ver mañana?'],
+    steps: ['Story con dos fotos y un sticker de encuesta: «¿{corte} o {barba}?».', 'Al día siguiente, publica el vídeo del ganador.', 'Comparte el resultado y agradece la participación.'],
+    ost: '¿Cuál queréis ver?',
+    cap: '—',
+    why: 'Las encuestas cuestan cero y suben la interacción de las stories, lo que hace que Instagram os enseñe más a esos seguidores.' },
+  { id: 'directo', p: 'comunidad', f: 'directo', g: ['comunidad', 'autoridad'], ct: 'directos', s: 'any', d: 2,
+    t: 'Directo: corte en vivo y preguntas al barbero',
+    h: ['En directo desde el sillón', 'Pregúntame lo que quieras mientras corto'],
+    steps: ['Anúncialo con 24 horas en stories (sticker de recordatorio).', 'Móvil fijo en trípode y buena luz.', 'Haz un {servicio} mientras respondes preguntas.', 'Al terminar, guarda el directo en el perfil.'],
+    ost: 'Directo · {servicio} en vivo',
+    cap: '—',
+    why: 'Pocos lo hacen y el directo avisa a vuestros seguidores en el momento: cercanía máxima.' },
+  { id: 'resenas', p: 'comunidad', f: 'reel', g: ['reservas', 'autoridad'], ct: 'clientes', d: 1,
+    t: 'El barbero lee vuestras reseñas',
+    h: ['Leemos vuestras reseñas de Google', 'Esta reseña nos ha emocionado'],
+    steps: ['El barbero lee tres reseñas reales en voz alta, con la reseña en pantalla.', 'Reacción sincera a cada una.', 'Cierre: «¿Nos dejas la tuya? {web}/resena».'],
+    ost: 'Leemos vuestras reseñas',
+    cap: 'Gracias por cada palabra. ¿Nos dejas la tuya? {web}/resena',
+    why: 'Prueba social en vídeo y, además, consigue más reseñas, que es lo que más pesa al elegir barbería en Google Maps.' },
+  { id: 'look-completo', p: 'comunidad', f: 'reel', g: ['alcance'], ct: 'colabs', s: 'any', d: 2,
+    t: 'Look completo: {marca} + {negocio}',
+    h: ['Del sillón al probador', 'Cambio de look total'],
+    steps: ['Colabora con {negocio} de {barrio}.', 'Primero el {servicio}, luego el cambio de ropa o de gafas.', 'Transición final al look completo.', 'Publicación en colaboración en los dos perfiles.'],
+    ost: 'Cambio de look total',
+    cap: 'Cambio de look total con nuestros vecinos. ¿Quién se apunta al siguiente?',
+    why: 'Sumáis audiencias locales sin pagar publicidad y el formato «cambio total» engancha.' },
+
+  // ── VII. Tendencias y humor ──
+  { id: 'audio-viral', p: 'tendencias', f: 'reel', g: ['alcance'], ct: 'tendencias', s: 'any', d: 1,
+    t: 'Transición de corte con el audio del momento',
+    h: ['Espera al cambio 👀', 'Del antes al después en un segundo'],
+    steps: ['Busca en Reels un audio en tendencia (los que llevan la flecha ↗).', 'Graba el antes y el después con el mismo encuadre.', 'Sincroniza el cambio con el golpe del audio.', 'Publica esta semana: los audios caducan rápido.'],
+    ost: '(el texto del audio o un simple «antes / después»)',
+    cap: '{servicio} en {marca}. ¿Te animas?',
+    why: 'Un audio en tendencia da un empujón extra de alcance; con vuestra estética destacáis entre los que lo usan.' },
+  { id: 'solo-puntas', p: 'tendencias', f: 'reel', g: ['alcance', 'comunidad'], ct: 'humor', d: 1,
+    t: 'POV: el cliente que dice «solo las puntas»',
+    h: ['Cuando el cliente dice «solo las puntas»…', 'Todos tenemos un cliente así'],
+    steps: ['Sketch de 10 a 15 segundos: el cliente pide «solo las puntas».', 'Cara del barbero a cámara (pausa dramática).', 'Remate inesperado.'],
+    ost: '«Solo las puntas»',
+    cap: 'Etiqueta al que siempre pide «solo las puntas» 😂',
+    why: 'El humor del gremio se comparte entre barberos y clientes: alcance fácil y simpatía de marca.' },
+  { id: 'tipos-clientes', p: 'tendencias', f: 'reel', g: ['alcance', 'comunidad'], ct: 'humor', d: 1,
+    t: 'Tipos de clientes en una barbería: {tipo}',
+    h: ['Tipos de clientes, parte 1: {tipo}', '¿Cuál eres tú?'],
+    steps: ['Sketch corto interpretando a {tipo}.', 'El barbero reacciona con humor.', 'Cierre: «¿Qué cliente quieres ver en la parte 2?».'],
+    ost: 'Tipos de clientes: {tipo}',
+    cap: '¿Te sientes identificado? Etiqueta al que es así 👇',
+    why: 'Es una serie: cada capítulo trae a gente a ver los anteriores y los comentarios te dan las ideas del siguiente.' },
+  { id: 'corte-mes', p: 'tendencias', f: 'reel', g: ['alcance', 'reservas'], ct: 'tendencias', d: 1,
+    t: 'El corte que más nos piden este mes: {corte}',
+    h: ['Este mes todo el mundo pide esto', 'El corte del momento en {ciudad}'],
+    steps: ['Dos o tres clientes con el {corte} (con permiso).', 'Para quién funciona y cada cuánto se repasa.', 'Cierre: «¿Te lo hacemos?».'],
+    ost: 'El corte del mes: {corte}',
+    cap: 'El {corte} arrasa este mes en {marca}. ¿Te animas?',
+    why: 'Lo que está de moda se busca: atrae a gente que ya quiere ese corte y solo busca dónde hacérselo.' },
+  { id: 'ia', p: 'tendencias', f: 'reel', g: ['alcance'], ct: 'tendencias', d: 2,
+    t: 'Le pedimos un corte a la IA… y lo hicimos',
+    h: ['La inteligencia artificial diseñó este corte', '¿Mejor que un barbero? Vamos a verlo'],
+    steps: ['Pide a una IA de imágenes un corte para un cliente voluntario.', 'Enseña la imagen y el reto.', 'Haz el corte (adaptándolo con criterio de barbero).', 'Comparación final: IA frente a realidad.'],
+    ost: 'IA vs. barbero',
+    cap: 'La IA propone, el barbero dispone. ¿Quién gana?',
+    why: 'Mezcla un tema de actualidad con oficio: genera curiosidad y debate en comentarios.' },
+  { id: 'cortes-2000', p: 'tendencias', f: 'reel', g: ['alcance', 'comunidad'], ct: 'humor', d: 1,
+    t: 'Reaccionando a los cortes de los 2000',
+    h: ['Si llevaste alguno de estos, ya tienes una edad', 'Los cortes de los 2000 que nadie quiere recordar'],
+    steps: ['Pantalla verde con fotos de cortes de los 2000: pincho con gomina, cresta, flequillo emo, mechas.', 'Reacción y comentario del barbero en cada uno.', 'Cierre: «¿Cuál llevaste tú?».'],
+    ost: 'Los cortes de los 2000',
+    cap: 'Confiesa: ¿cuál llevaste tú? 👇',
+    why: 'Nostalgia + humor + pregunta directa: comentarios asegurados.' },
+  { id: 'famoso', p: 'tendencias', f: 'reel', g: ['alcance', 'reservas'], ct: 'tendencias', s: ['degradado', 'corte-clasico'], d: 2,
+    t: 'El corte de un futbolista del momento, en {marca}',
+    h: ['¿Quieres el corte de…? Así se pide', 'El corte que todos piden este verano'],
+    steps: ['Elige el corte de un jugador o artista del que se esté hablando.', 'Recréalo con un cliente.', 'Explica cómo pedirlo y para quién funciona.'],
+    ost: 'Inspirado en…',
+    cap: '¿Qué corte de famoso quieres que hagamos ahora? 👇',
+    note: 'No uses fotos del famoso sin derechos: basta con decir «inspirado en…».',
+    why: 'Aprovecha lo que la gente ya está buscando y lo convierte en un corte reservable.' },
+  { id: 'dice-vs-quiere', p: 'tendencias', f: 'reel', g: ['alcance'], ct: 'humor', d: 1,
+    t: 'Lo que dice el cliente vs. lo que quiere decir',
+    h: ['Lo que dice el cliente vs. lo que quiere decir', 'Traducción simultánea de barbería'],
+    steps: ['Frase del cliente en pantalla («Lo de siempre»).', 'Traducción del barbero («Lo de siempre pero completamente distinto»).', 'Cuatro o cinco frases a ritmo rápido.'],
+    ost: 'Cliente → traducción',
+    cap: '¿Cuál es la tuya? 😂',
+    why: 'Formato muy reconocible y rápido de producir: perfecto para semanas con poco tiempo.' },
+
+  // ── VIII. Reservas ──
+  { id: 'huecos-hoy', p: 'promo', f: 'story', g: ['reservas'], ct: 'stories', d: 1,
+    t: 'Huecos libres de hoy',
+    h: ['Hoy quedan 3 huecos', 'Último hueco de la tarde'],
+    steps: ['Story a primera hora: foto del sillón vacío con buena luz.', 'Texto con las horas libres: «Hoy quedan: 17:00 · 18:30 · 19:15».', 'Sticker de enlace a la reserva por WhatsApp.', 'Actualízala a mediodía tachando las que se llenen: urgencia real.'],
+    ost: 'Hoy quedan: 17:00 · 18:30 · 19:15',
+    cap: '—',
+    why: 'Es la story que más reservas trae: concreta, urgente y a un toque de reservar.' },
+  { id: 'que-incluye', p: 'promo', f: 'reel', g: ['reservas'], ct: 'promos', s: ['corte-y-barba', 'ritual-imperio', 'afeitado-imperial', 'degradado'], d: 1,
+    t: 'Lo que incluye un {servicio} por {precio}',
+    h: ['Esto es lo que te llevas por {precio}', '¿Qué incluye un {servicio}?'],
+    steps: ['Un plano por paso con su nombre en pantalla: diagnóstico, lavado, toalla, oficio, acabado.', 'El precio, al final, en grande.', 'Cierre: «¿Te lo reservamos?».'],
+    ost: '{servicio} · {precio}',
+    cap: '{servicio}: {minutos} minutos de oficio por {precio}. Reserva en tres toques.',
+    why: 'Muestra el valor antes del precio: así el precio parece pequeño. Es el vídeo para quien duda entre vosotros y otra barbería.' },
+  { id: 'ritual', p: 'promo', f: 'reel', g: ['reservas', 'autoridad'], ct: 'proceso', s: ['ritual-imperio'], d: 2,
+    t: 'Ritual Imperio: {minutos} minutos en 30 segundos',
+    h: ['{minutos} minutos de desconexión en 30 segundos', 'El servicio que nadie más en {ciudad} hace así'],
+    steps: ['Cada fase en dos segundos: corte, barba, doble toalla caliente, mascarilla y masaje craneal.', 'Música calmada y planos lentos.', 'Final: el cliente relajado y el precio.'],
+    ost: 'Ritual Imperio · {minutos} min',
+    cap: 'Nuestra firma. {minutos} minutos para ti por {precio}. Ideal para regalar.',
+    why: 'Pone en el escaparate el servicio de más valor: sube el ticket medio y diferencia la marca.' },
+  { id: 'club', p: 'promo', f: 'reel', g: ['reservas', 'comunidad'], ct: 'promos', d: 1,
+    t: 'Legionario, Centurión o César: el Club en 20 segundos',
+    h: ['¿Qué rango eres?', 'Deja de pensar cuándo te toca el corte'],
+    steps: ['Tarjeta de socio en mano y tres rangos en pantalla.', 'Una ventaja clave de cada uno.', 'Cierre: «Sin permanencia. Pregunta en tu próxima cita».'],
+    ost: '¿Qué rango eres?',
+    cap: 'Legionario, Centurión o César. Tu hueco reservado antes que nadie y sin permanencia.',
+    note: 'Solo si el Club ya está en marcha.',
+    why: 'La membresía convierte clientes ocasionales en fijos: ingresos previsibles todos los meses.' },
+  { id: 'tres-toques', p: 'promo', f: 'reel', g: ['reservas'], ct: 'promos', d: 1,
+    t: 'Reservar en {marca}: tres toques, diez segundos',
+    h: ['Reservar no puede ser más fácil', '¿Te da pereza llamar? A nosotros también'],
+    steps: ['Grabación de pantalla de la web: servicio → día → franja → WhatsApp.', 'Un cronómetro en pantalla marcando los segundos.', 'Cierre: «Enlace en la bio».'],
+    ost: 'Reserva en 10 segundos',
+    cap: 'Sin llamadas ni apps: servicio, día, franja y listo. Enlace en la bio.',
+    why: 'Quita la fricción: mucha gente no reserva por pereza de llamar. Enseñar lo fácil que es convierte.' },
+  { id: 'regalo', p: 'promo', f: 'post', g: ['reservas'], ct: 'promos', s: ['ritual-imperio', 'afeitado-imperial', 'corte-y-barba'], d: 1,
+    t: 'Regala un {servicio}',
+    h: ['El regalo que sí va a usar', '¿No sabes qué regalarle?'],
+    steps: ['Foto de la tarjeta regalo sobre el mármol, con lazo de bronce.', 'Qué incluye y cómo conseguirla (en el local o por WhatsApp).', 'Fecha límite si hay una celebración cerca.'],
+    ost: 'Tarjeta regalo {marca}',
+    cap: 'El regalo que sí va a usar: un {servicio} por {precio}. Pídela por WhatsApp.',
+    why: 'Las tarjetas regalo traen clientes nuevos de la mano de los fijos y dinero por adelantado.' },
+  { id: 'jueves', p: 'promo', f: 'reel', g: ['reservas'], ct: 'promos', s: 'any', d: 1,
+    t: 'Jueves: el fin de semana se prepara hoy',
+    h: ['¿Plan este finde? Tu corte primero', 'Quedan pocos huecos para el sábado'],
+    steps: ['Plano rápido de un {servicio} terminado.', 'Texto: «Quedan X huecos para viernes y sábado».', 'Cierre con el botón de reservar.'],
+    ost: 'Finde a la vista: ¿tienes hueco?',
+    cap: 'Viernes y sábado se llenan. Reserva hoy en tres toques.',
+    why: 'Llega justo cuando la gente organiza el fin de semana: es la publicación que más citas llena.' },
+
+  // ── IX. Fechas especiales ──
+  { id: 'halloween', p: 'tendencias', f: 'reel', g: ['alcance'], ct: 'humor', ev: 'halloween', d: 1,
+    t: 'Los cortes más terroríficos de la historia',
+    h: ['Los cortes que más miedo dan 🎃', 'Esto sí que da miedo'],
+    steps: ['Fotos o recreaciones de cortes desastrosos (sin señalar a nadie).', 'Reacción de miedo del barbero en cada uno.', 'Cierre: «Para que esto no te pase: reserva».'],
+    ost: 'Cortes de terror 🎃',
+    cap: 'Este Halloween, que el susto sea el disfraz y no el corte.',
+    why: 'Aprovecha la fecha sin disfrazarse de nada: humor de temporada con vuestra estética.' },
+  { id: 'movember', p: 'comunidad', f: 'reel', g: ['comunidad', 'alcance'], ct: 'promos', ev: 'movember', d: 2,
+    t: 'Movember: el bigote también es solidario',
+    h: ['En noviembre, el bigote tiene un motivo', 'Este mes, deja crecer el bigote'],
+    steps: ['Explica en 10 segundos qué es Movember: concienciar sobre la salud masculina.', 'Reto al equipo y a los clientes: dejar crecer el bigote todo el mes.', 'Propuesta: perfilado de bigote gratis en noviembre o un euro por servicio para una causa de salud masculina.', 'Seguimiento semanal del bigote del equipo.'],
+    ost: 'Movember en {marca}',
+    cap: 'Este noviembre nos dejamos el bigote por una buena causa. ¿Te unes?',
+    why: 'Es la fecha natural de las barberías: suma propósito, comunidad y una serie de contenido para todo el mes.' },
+  { id: 'bigotes', p: 'educacion', f: 'carrusel', g: ['alcance', 'autoridad'], ct: 'guias', ev: 'movember', d: 1,
+    t: '5 estilos de bigote para Movember',
+    h: ['¿Qué bigote te va?', 'Bigote sí, pero ¿cuál?'],
+    steps: ['Chevron, herradura, lápiz, morsa y «Adriano» (con barba).', 'Una diapositiva por estilo: para qué cara y cómo mantenerlo.', 'Última: «Te lo perfilamos gratis este mes» (si hacéis la acción).'],
+    ost: 'Estilos de bigote',
+    cap: 'Movember: elige tu estilo y te ayudamos a llevarlo bien.',
+    why: 'Contenido útil y de temporada que se guarda; refuerza vuestra acción de Movember.' },
+  { id: 'black-friday', p: 'promo', f: 'post', g: ['reservas'], ct: 'promos', ev: 'blackfriday', d: 1,
+    t: 'Black Friday: no rebajamos el oficio, pero…',
+    h: ['No hacemos descuentos. Casi nunca.', 'Black Friday imperial'],
+    steps: ['Mensaje: «No rebajamos el oficio», en estética de inscripción.', 'Oferta con valor y no con descuento: tarjeta regalo con un extra, primer mes del Club a mitad o bono de tres cortes.', 'Solo ese fin de semana.'],
+    ost: 'Black Friday imperial',
+    cap: 'No rebajamos el oficio, pero este fin de semana tu tarjeta regalo lleva un extra.',
+    why: 'Os aleja de la guerra de descuentos y aprovecha el pico de compras de regalos.' },
+  { id: 'diciembre', p: 'promo', f: 'carrusel', g: ['reservas'], ct: 'promos', ev: 'navidad', d: 1,
+    t: 'Diciembre se llena: reserva ya tu corte para las fiestas',
+    h: ['Si no reservas ya, no llegas a Nochebuena', 'Diciembre está volando'],
+    steps: ['Calendario de diciembre con los días más pedidos marcados: cenas de empresa, Nochebuena y Nochevieja.', 'Horarios especiales si los hay.', 'Cierre: «Reserva ya, que vuelan».'],
+    ost: 'Agenda de diciembre',
+    cap: 'Cenas de empresa, Nochebuena, Nochevieja… Diciembre vuela. Reserva tu hueco ya.',
+    why: 'Adelanta las reservas y llena el mes con más demanda del año antes de que la competencia se mueva.' },
+  { id: 'nochevieja', p: 'educacion', f: 'reel', g: ['alcance', 'reservas'], ct: 'consejos', ev: 'navidad', s: ['corte-clasico', 'degradado'], d: 1,
+    t: 'Tres peinados para Nochevieja',
+    h: ['Tu peinado para Nochevieja, resuelto', 'Que el peinado aguante hasta las uvas'],
+    steps: ['Repeinado clásico con brillo.', 'Texturizado mate.', 'Hacia atrás con volumen.', 'Truco para que aguante toda la noche.'],
+    ost: '3 peinados para Nochevieja',
+    cap: 'Elige el tuyo. Y si quieres el corte antes, quedan pocos huecos.',
+    why: 'Útil, de temporada y con llamada a reservar antes de fin de año.' },
+  { id: 'reyes', p: 'promo', f: 'reel', g: ['reservas'], ct: 'promos', ev: 'reyes', s: ['ritual-imperio', 'afeitado-imperial'], d: 1,
+    t: 'Reyes: el regalo para el que lo tiene todo',
+    h: ['¿Todavía sin regalo de Reyes?', 'Sus Majestades también regalan cortes'],
+    steps: ['Tarjeta regalo envuelta junto al sillón.', 'Qué incluye el {servicio}.', 'Fecha límite para pedirla.'],
+    ost: 'Regalo de Reyes',
+    cap: 'Para el que lo tiene todo: un {servicio}. Pídela hasta el día 5.',
+    why: 'Regalo de última hora sin envío ni talla: perfecto para indecisos.' },
+  { id: 'ano-nuevo', p: 'oficio', f: 'reel', g: ['alcance', 'reservas'], ct: 'transformacion', ev: 'anonuevo', s: ['corte-clasico', 'degradado', 'corte-y-barba'], d: 1,
+    t: 'Año nuevo, look nuevo: el cambio radical',
+    h: ['Año nuevo, cara nueva', 'Su propósito de año nuevo: cambiar de look'],
+    steps: ['Cliente que quiere un cambio de verdad.', 'Transformación completa en cortes rápidos.', 'Reacción final.'],
+    ost: 'Propósito cumplido ✅',
+    cap: 'El propósito más fácil de cumplir este año. ¿Te animas al cambio?',
+    why: 'En enero la gente quiere cambiar: os ponéis delante justo cuando buscan hacerlo.' },
+  { id: 'san-valentin', p: 'promo', f: 'post', g: ['reservas'], ct: 'promos', ev: 'sanvalentin', s: ['ritual-imperio', 'afeitado-imperial'], d: 1,
+    t: 'San Valentín: regálale un {servicio}',
+    h: ['Lo que de verdad quiere por San Valentín', 'Menos flores y más toalla caliente'],
+    steps: ['Tarjeta regalo con un detalle rojo sobre el mármol.', 'Qué incluye el {servicio}.', 'Cómo pedirla.'],
+    ost: 'San Valentín imperial',
+    cap: 'Menos flores, más toalla caliente. Tarjeta regalo de {servicio}: {precio}.',
+    why: 'Pensado para quien regala, que suele ser alguien que aún no os sigue: público nuevo.' },
+  { id: 'dia-padre', p: 'promo', f: 'reel', g: ['reservas', 'comunidad'], ct: 'promos', ev: 'padre', s: ['ritual-imperio', 'afeitado-imperial', 'corte-y-barba'], d: 1,
+    t: 'Día del Padre: el regalo que sí va a usar',
+    h: ['Otra corbata no, por favor', 'Este año, regálale esto'],
+    steps: ['Sketch: el padre abre regalos repetidos (corbata, colonia…) hasta que llega la tarjeta de {marca}.', 'Su cara al recibirla.', 'Qué incluye y cómo pedirla.'],
+    ost: 'Otra corbata no',
+    cap: 'Este año, que no sea otra corbata. Tarjeta regalo de {servicio}: {precio}.',
+    why: 'Humor y solución a un problema real (qué regalar) justo en la semana en que se busca.' },
+  { id: 'semana-santa', p: 'sevilla', f: 'reel', g: ['reservas'], ct: 'local', ev: 'semanasanta', s: ['corte-clasico', 'corte-y-barba'], d: 1,
+    t: 'Impecable para Semana Santa',
+    h: ['La semana más esperada del año empieza en el sillón', 'Antes de la Madrugá'],
+    steps: ['Planos sobrios: corte clásico, repeinado y barba perfilada.', 'Música serena, sin estridencias.', 'Horario especial de esos días.', 'Cierre: «Reserva con tiempo».'],
+    ost: 'Semana Santa · horario especial',
+    cap: 'Llega impecable a la semana más esperada. Reserva con tiempo: los huecos vuelan.',
+    note: 'Tono respetuoso: estética sobria y nada de humor con la fecha.',
+    why: 'Es cuando más gente quiere ir bien arreglada en {ciudad}: adelantarse llena la agenda.' },
+  { id: 'feria', p: 'sevilla', f: 'reel', g: ['reservas', 'alcance'], ct: 'local', ev: 'feria', s: ['corte-clasico', 'degradado', 'corte-y-barba'], d: 1,
+    t: 'Listo para la Feria: el corte del alumbrado',
+    h: ['¿Tienes ya cita para antes del alumbrado?', 'Traje, botos y el corte de Feria'],
+    steps: ['Cliente con traje corto o de chaqueta: corte y repeinado clásico.', 'Barba perfilada y toque final con brillo.', 'Texto: huecos de la semana de Feria.', 'Cierre: «¡Nos vemos en el Real!».'],
+    ost: 'Listo para la Feria',
+    cap: 'Que el corte aguante hasta el último rebujito. Agenda de Feria abierta: reserva ya.',
+    why: 'La semana con más demanda de la ciudad: quien lo anuncia antes, llena antes.' },
+  { id: 'feria-peinados', p: 'educacion', f: 'carrusel', g: ['alcance'], ct: 'guias', ev: 'feria', d: 1,
+    t: 'Peinados de Feria que aguantan hasta el amanecer',
+    h: ['Que el peinado aguante más que tú', 'Peinados de Feria a prueba de sevillanas'],
+    steps: ['Tres peinados: repeinado clásico, hacia atrás con volumen y raya al lado.', 'Producto y truco para cada uno.', 'Última: «Y el corte, antes del alumbrado».'],
+    ost: 'Peinados de Feria',
+    cap: 'Guárdalo para el alumbrado. ¿Cuál te pones?',
+    why: 'Útil y local: se comparte en todos los grupos de amigos que preparan la Feria.' },
+  { id: 'bodas', p: 'educacion', f: 'carrusel', g: ['reservas', 'autoridad'], ct: 'guias', ev: 'bodas', s: ['ritual-imperio', 'corte-y-barba'], d: 1,
+    t: 'Novio, padrino o invitado: el corte para la boda',
+    h: ['¿Tienes boda? Esto es lo que tienes que saber', 'El error que cometen todos los novios'],
+    steps: ['Cuándo cortarse: entre cinco y siete días antes (para que asiente).', 'Qué estilo según el traje.', 'Pack novio: prueba previa + {servicio} el día antes.', 'Última: cómo reservarlo.'],
+    ost: 'El corte para la boda',
+    cap: 'Temporada de bodas y comuniones: te preparamos para el gran día. Pregunta por el pack novio.',
+    why: 'Responde una duda real en plena temporada y abre la puerta a un servicio de más valor.' },
+  { id: 'verano', p: 'educacion', f: 'reel', g: ['alcance', 'reservas'], ct: 'consejos', ev: 'verano', s: ['degradado', 'corte-clasico'], d: 1,
+    t: 'Corte de verano: fresco y que aguante agosto en {ciudad}',
+    h: ['Con 40 grados, tu pelo necesita esto', 'El corte para sobrevivir al verano en {ciudad}'],
+    steps: ['Cortes frescos: degradado alto, buzz cut, crop corto.', 'Cómo cuidar el pelo del sol y del cloro.', 'Recordatorio de horario de verano y de agosto.'],
+    ost: 'Sobrevive al verano',
+    cap: 'Fresco, cómodo y que aguante hasta septiembre. ¿Quién se apunta?',
+    why: 'Aprovecha la conversación de todos los veranos en {ciudad}: el calor.' },
+  { id: 'vuelta-cole', p: 'comunidad', f: 'reel', g: ['reservas', 'comunidad'], ct: 'clientes', ev: 'vueltacole', s: ['corte-infantil'], d: 1,
+    t: 'Vuelta al cole: los herederos del imperio',
+    h: ['Primer día de cole, primer corte del curso', 'Los herederos vuelven a clase'],
+    steps: ['Niños con mochila en el sillón (con permiso de los padres).', 'Cortes rápidos y reacciones.', 'Recordatorio: los huecos de septiembre vuelan.'],
+    ost: 'Vuelta al cole',
+    cap: 'Los herederos del imperio vuelven a clase. {servicio}: {precio}. Reserva ya.',
+    why: 'Septiembre es pico de cortes infantiles: llega a los padres justo cuando lo necesitan.' },
+];
+
+/** Ideas de stories para el plan diario. */
+const STORY_IDEAS = [
+  'Encuesta: «¿Degradado alto o bajo?» (enseña el resultado mañana)',
+  'Caja de preguntas: «Pregúntale al barbero»',
+  'El antes y después del último cliente (con su permiso, etiquétalo)',
+  'Comparte las stories en las que os etiquetan los clientes',
+  'Quiz: «¿Qué número de máquina es este?»',
+  'Al abrir: café, toallas al calentador y la música del día',
+  'Una reseña de Google + enlace a {web}/resena',
+  'Producto de la semana explicado en tres frases',
+  'Tres fotos del día con música',
+  'Cuenta atrás para el contenido del domingo',
+  'Recordatorio: «el finde se llena, reserva hoy»',
+];
+
+const CTA_BY_GOAL = {
+  alcance: ['Guárdalo para enseñárselo a tu barbero 📌', 'Envíaselo al amigo que necesita verlo', 'Síguenos: cada semana, oficio de verdad'],
+  reservas: ['Reserva en tres toques: enlace en la bio', 'Escríbenos «CITA» por mensaje directo y te guardamos hueco', 'Esta semana quedan pocos huecos: reserva en la bio'],
+  comunidad: ['¿Tú qué opinas? Te leemos en comentarios 👇', 'Etiqueta a quien tiene que verlo', 'Cuéntanos tu experiencia en comentarios'],
+  autoridad: ['Síguenos para aprender a pedir (y cuidar) tu corte', 'Guárdalo: te va a hacer falta', 'Pregúntanos lo que quieras: respondemos todo'],
+};
+
+const WHEN_BY_FORMAT = {
+  reel: 'De 20:30 a 22:00 (pico de uso tras la cena) o de 13:30 a 14:30',
+  carrusel: 'Domingo de 11:00 a 13:00 o entre semana de 13:30 a 14:30 (ratos de lectura)',
+  post: 'De 13:30 a 14:30 o de 20:30 a 21:30',
+  story: 'A primera hora al abrir y otra a las 17:00, antes del turno de tarde',
+  directo: 'Jueves o domingo de 21:00 a 22:00 (anúncialo 24 h antes en stories)',
+};
+
+const SERVICE_TAGS = {
+  'corte-clasico': ['#cortedepelo', '#cortehombre'],
+  degradado: ['#degradado', '#fade'],
+  barba: ['#barba', '#beardstyle'],
+  'corte-y-barba': ['#barba', '#degradado'],
+  'afeitado-imperial': ['#afeitadoclasico', '#navaja'],
+  'ritual-imperio': ['#barberiadeautor', '#toallacaliente'],
+  'corte-infantil': ['#cortesinfantiles', '#peluqueriainfantil'],
+  'cejas-y-detalles': ['#perfilado', '#lineup'],
+};
+const PILLAR_TAGS = {
+  oficio: ['#barbershop', '#barberlife'],
+  legado: ['#imperioromano', '#italica'],
+  sevilla: ['#humorsevillano', '#planes{city}'],
+  educacion: ['#consejosdebarbero', '#estilomasculino'],
+  backstage: ['#barberlife', '#detrasdecamaras'],
+  comunidad: ['#barberia', '#clientesfelices'],
+  tendencias: ['#humorbarbero', '#barberhumor'],
+  promo: ['#reservaya', '#barberia'],
+};
+
+/* ---------- Fichas preparadas (análisis hecho con datos públicos) ---------- */
+
+const PRESETS = [
+  {
+    presetId: 'essencebarbers_',
+    name: 'Essence Barbers',
+    kind: 'referente',
+    ig: 'essencebarbers_',
+    tiktok: '',
+    area: 'Sant Cugat del Vallès (Barcelona)',
+    igFollowers: 2239,
+    tiktokFollowers: null,
+    postsPerWeek: null,
+    avgInteractions: null,
+    avgViews: null,
+    price: 22,
+    rating: 5,
+    reviews: 456,
+    covers: [],
+    scores: {},
+    bestPost: '',
+    strengths: 'Nota de 5,0 en Booksy con 456 reseñas. Precios premium bien defendidos: corte joven 22 €, caballero 27 €, corte + ritual de barba 32–37 €. Servicio diferencial de pelo largo con navaja japonesa (32 €, 1 h). Segmenta por edad (joven 10–30 / caballero +30). Se posiciona como «imagen masculina» y experiencia de bienestar, no solo corte.',
+    weaknesses: 'Nombre genérico, sin historia propia. Comunidad pequeña en Instagram (~2.239 seguidores y 136 publicaciones según el buscador). Reserva por una app de terceros (Booksy). No se ve programa de socios ni fidelización.',
+    notes: 'Datos públicos recogidos el 3 de octubre de 2026 (Booksy y buscadores; Instagram no se pudo abrir). No compite en Sevilla: úsala como referente de precio y posicionamiento. Completa sus números y qué publica mirando su perfil 10 minutos.',
+  },
+];
+
+/* ==========================================================================
+   Utilidades
+   ========================================================================== */
+
+const $ = (sel, root = document) => root.querySelector(sel);
+const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
+const esc = (v) => String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+const clamp = (n, a, b) => Math.min(b, Math.max(a, n));
+const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+const toNum = (v) => (v === '' || v == null || !Number.isFinite(Number(v)) ? null : Number(v));
+const nf0 = new Intl.NumberFormat('es-ES', { maximumFractionDigits: 0 });
+const nf1 = new Intl.NumberFormat('es-ES', { maximumFractionDigits: 1 });
+const fmtNum = (n) => (n == null ? '—' : nf0.format(n));
+const fmt1 = (n) => (n == null ? '—' : nf1.format(n));
+const fmtPct = (n) => (n == null ? '—' : nf1.format(n) + ' %');
+const fmtEur = (n) => (n == null ? '—' : nf1.format(n) + ' €');
+const fmtRating = (n) => (n == null ? '—' : new Intl.NumberFormat('es-ES', { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(n));
+const avg = (arr) => {
+  const v = arr.filter((x) => x != null && Number.isFinite(x));
+  return v.length ? v.reduce((a, b) => a + b, 0) / v.length : null;
+};
+const slug = (s) => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]/g, '');
+const cleanHandle = (s) => String(s || '').trim().replace(/^https?:\/\/(www\.)?(instagram|tiktok)\.com\/@?/i, '').replace(/[/?].*$/, '').replace(/^@/, '');
+
+function weightedPick(items) {
+  const total = items.reduce((s, it) => s + it.w, 0);
+  if (total <= 0) return null;
+  let r = Math.random() * total;
+  for (const it of items) {
+    r -= it.w;
+    if (r <= 0) return it;
+  }
+  return items[items.length - 1];
+}
+
+const DAY = 86400000;
+const startOfDay = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
+const addDays = (d, n) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
+const toISO = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+const fromISO = (s) => {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s || '');
+  return m ? new Date(+m[1], +m[2] - 1, +m[3]) : null;
+};
+const daysUntil = (d) => Math.round((startOfDay(d) - startOfDay(new Date())) / DAY);
+const dfDay = new Intl.DateTimeFormat('es-ES', { weekday: 'long', day: 'numeric', month: 'short' });
+const dfShort = new Intl.DateTimeFormat('es-ES', { day: 'numeric', month: 'short' });
+const dfLong = new Intl.DateTimeFormat('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
+/** Lunes de la semana de `d` (la semana empieza en lunes). */
+const mondayOf = (d) => addDays(startOfDay(d), -((d.getDay() + 6) % 7));
+
+/* ==========================================================================
+   Estado
+   ========================================================================== */
+
+function emptyProfile() {
+  return {
+    id: uid(), name: '', kind: 'local', ig: '', tiktok: '', area: '',
+    igFollowers: null, tiktokFollowers: null, postsPerWeek: null, avgInteractions: null, avgViews: null,
+    price: null, rating: null, reviews: null, covers: [], scores: {}, bestPost: '',
+    strengths: '', weaknesses: '', notes: '', updatedAt: null,
+  };
+}
+
+function defaultState() {
+  return {
+    version: 1,
+    brand: { name: 'Imperio Club', handle: 'imperioclub', area: 'Sevilla', city: 'Sevilla', web: 'imperioclubsvq.com' },
+    services: DEFAULT_SERVICES.map((s) => ({ ...s })),
+    me: { ...emptyProfile(), id: 'me' },
+    competitors: [],
+    saved: [],
+    plan: null,
+    ui: {
+      tab: 'competencia',
+      gen: { goal: '', pillar: '', format: '', service: '', event: 'auto', gaps: true, focus: '' },
+      plan: { weeks: 2, perWeek: 4, stories: true, start: '' },
+      bankFilter: '',
+    },
+  };
+}
+
+/** Mezcla lo guardado con los valores por defecto para tolerar versiones antiguas. */
+function normalize(raw) {
+  const base = defaultState();
+  if (!raw || typeof raw !== 'object') return base;
+  const s = { ...base, ...raw };
+  s.brand = { ...base.brand, ...(raw.brand || {}) };
+  s.services = base.services.map((d) => ({ ...d, ...((raw.services || []).find((x) => x.slug === d.slug) || {}) }));
+  s.me = { ...emptyProfile(), ...(raw.me || {}), id: 'me' };
+  s.competitors = (Array.isArray(raw.competitors) ? raw.competitors : []).map((c) => ({ ...emptyProfile(), ...c, covers: c.covers || [], scores: c.scores || {} }));
+  s.saved = Array.isArray(raw.saved) ? raw.saved : [];
+  s.ui = { ...base.ui, ...(raw.ui || {}) };
+  s.ui.gen = { ...base.ui.gen, ...((raw.ui || {}).gen || {}) };
+  s.ui.plan = { ...base.ui.plan, ...((raw.ui || {}).plan || {}) };
+  return s;
+}
+
+let storageOk = true;
+function load() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return normalize(raw ? JSON.parse(raw) : null);
+  } catch {
+    storageOk = false;
+    return defaultState();
+  }
+}
+function save() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch {
+    storageOk = false;
+    $('#storage-warning').hidden = false;
+  }
+}
+
+let state = load();
+/** Ideas mostradas en el generador (no se guardan hasta pulsar «Guardar»). */
+let genResults = [];
+/** Plantillas usadas recientemente, para no repetir. */
+const recent = [];
+
+/* ==========================================================================
+   Fechas especiales
+   ========================================================================== */
+
+/** Domingo de Pascua (algoritmo gregoriano anónimo). */
+function easter(y) {
+  const a = y % 19, b = Math.floor(y / 100), c = y % 100, d = Math.floor(b / 4), e = b % 4;
+  const f = Math.floor((b + 8) / 25), g = Math.floor((b - f + 1) / 3), h = (19 * a + b - d - g + 15) % 30;
+  const i = Math.floor(c / 4), k = c % 4, l = (32 + 2 * e + 2 * i - h - k) % 7, m = Math.floor((a + 11 * h + 22 * l) / 451);
+  const month = Math.floor((h + l - 7 * m + 114) / 31), day = ((h + l - 7 * m + 114) % 31) + 1;
+  return new Date(y, month - 1, day);
+}
+/** Viernes siguiente al cuarto jueves de noviembre. */
+function blackFriday(y) {
+  const first = new Date(y, 10, 1);
+  const firstThu = 1 + ((4 - first.getDay() + 7) % 7);
+  return new Date(y, 10, firstThu + 21 + 1);
+}
+
+function eventsForYear(y) {
+  const E = easter(y);
+  const city = state.brand.city || 'Sevilla';
+  return [
+    { id: 'anonuevo', label: 'Año nuevo, look nuevo', start: new Date(y, 0, 1), end: new Date(y, 0, 15), lead: 7 },
+    { id: 'reyes', label: 'Reyes', start: new Date(y, 0, 6), end: new Date(y, 0, 6), lead: 21 },
+    { id: 'sanvalentin', label: 'San Valentín', start: new Date(y, 1, 14), end: new Date(y, 1, 14), lead: 14 },
+    { id: 'padre', label: 'Día del Padre', start: new Date(y, 2, 19), end: new Date(y, 2, 19), lead: 21 },
+    { id: 'semanasanta', label: 'Semana Santa', start: addDays(E, -7), end: E, lead: 21 },
+    { id: 'feria', label: 'Feria de Abril (fecha aprox.)', start: addDays(E, 13), end: addDays(E, 20), lead: 21 },
+    { id: 'bodas', label: 'Temporada de bodas y comuniones', start: new Date(y, 3, 15), end: new Date(y, 5, 30), lead: 14 },
+    { id: 'verano', label: `Verano en ${city}`, start: new Date(y, 5, 21), end: new Date(y, 8, 15), lead: 14 },
+    { id: 'vueltacole', label: 'Vuelta al cole', start: new Date(y, 8, 1), end: new Date(y, 8, 15), lead: 21 },
+    { id: 'halloween', label: 'Halloween', start: new Date(y, 9, 31), end: new Date(y, 9, 31), lead: 21 },
+    { id: 'movember', label: 'Movember', start: new Date(y, 10, 1), end: new Date(y, 10, 30), lead: 14 },
+    { id: 'blackfriday', label: 'Black Friday', start: blackFriday(y), end: blackFriday(y), lead: 14 },
+    { id: 'navidad', label: 'Navidad y cenas de empresa', start: new Date(y, 11, 1), end: new Date(y + 1, 0, 6), lead: 21 },
+  ];
+}
+
+/** Fechas cuya ventana de preparación (lead) o celebración toca el periodo [from, to]. */
+function eventsBetween(from, to, useLead = true, leadFactor = 1) {
+  const years = new Set([from.getFullYear() - 1, from.getFullYear(), to.getFullYear()]);
+  const out = [];
+  years.forEach((y) => eventsForYear(y).forEach((ev) => {
+    const open = useLead ? addDays(ev.start, -Math.round(ev.lead * leadFactor)) : ev.start;
+    if (open <= to && ev.end >= from) out.push(ev);
+  }));
+  return out.sort((a, b) => a.start - b.start);
+}
+
+const EVENT_IDS = [...new Set(TEMPLATES.filter((t) => t.ev).map((t) => t.ev))];
+function eventLabel(id) {
+  const ev = eventsForYear(new Date().getFullYear()).find((e) => e.id === id);
+  return ev ? ev.label : id;
+}
+function whenLabel(ev) {
+  const n = daysUntil(ev.start);
+  if (n <= 0 && daysUntil(ev.end) >= 0) return 'ahora';
+  if (n === 1) return 'mañana';
+  return `en ${n} días · ${dfShort.format(ev.start)}`;
+}
+
+/* ==========================================================================
+   Análisis de la competencia
+   ========================================================================== */
+
+function engagement(p) {
+  return p && p.igFollowers > 0 && p.avgInteractions != null ? (p.avgInteractions / p.igFollowers) * 100 : null;
+}
+function erChip(er) {
+  if (er == null) return '';
+  if (er < 1) return '<span class="chip bad">Bajo</span>';
+  if (er < 3) return '<span class="chip mid">Normal</span>';
+  if (er < 6) return '<span class="chip good">Bueno</span>';
+  return '<span class="chip good">Excelente</span>';
+}
+
+/** Índice orientativo 0–100: valoración, engagement, constancia y reseñas. */
+function imperioIndex(p) {
+  const parts = [];
+  const sc = avg(DIMENSIONS.map((d) => toNum(p.scores?.[d.id])));
+  if (sc != null) parts.push([((sc - 1) / 4) * 100, 0.45]);
+  const er = engagement(p);
+  if (er != null) parts.push([(clamp(er, 0, 6) / 6) * 100, 0.25]);
+  if (p.postsPerWeek != null) parts.push([(clamp(p.postsPerWeek, 0, 7) / 7) * 100, 0.15]);
+  if (p.rating != null) parts.push([clamp((p.rating - 3) / 2, 0, 1) * 100, 0.15]);
+  if (parts.length < 2) return null;
+  const w = parts.reduce((s, [, x]) => s + x, 0);
+  return Math.round(parts.reduce((s, [v, x]) => s + v * x, 0) / w);
+}
+
+/** Cuántos competidores (con contenido marcado) publican cada tipo. */
+function coverage(ctId, focusId) {
+  const pool = state.competitors.filter((c) => (!focusId || c.id === focusId) && c.covers && c.covers.length);
+  const who = pool.filter((c) => c.covers.includes(ctId));
+  return { n: pool.length, count: who.length, coverage: pool.length ? who.length / pool.length : null, who: who.map((c) => c.name) };
+}
+
+function gapStatus(cov) {
+  if (!cov.n) return { label: 'Sin datos', cls: '' };
+  if (cov.count === 0) return { label: 'Hueco libre', cls: 'good' };
+  if (cov.coverage <= 1 / 3) return { label: 'Poco explotado', cls: 'good' };
+  if (cov.coverage < 2 / 3) return { label: 'Disputado', cls: 'mid' };
+  return { label: 'Saturado', cls: 'bad' };
+}
+
+function gapRanking(focusId) {
+  return CONTENT_TYPES.map((ct) => ({ ...ct, ...coverage(ct.id, focusId), mine: state.me.covers.includes(ct.id) }))
+    .sort((a, b) => {
+      const sa = (a.coverage ?? 0.5) + (a.mine ? 0.5 : 0), sb = (b.coverage ?? 0.5) + (b.mine ? 0.5 : 0);
+      return sa - sb || CT_PRIORITY.indexOf(a.id) - CT_PRIORITY.indexOf(b.id);
+    });
+}
+
+function myCutPrice() {
+  if (state.me.price != null) return state.me.price;
+  const s = state.services.find((x) => x.slug === 'corte-clasico');
+  return s ? s.price : null;
+}
+
+function recommendations() {
+  const comps = state.competitors;
+  const me = state.me;
+  const recs = [];
+  if (!comps.length) return recs;
+  const meFilled = [me.igFollowers, me.postsPerWeek, me.avgInteractions, me.reviews].some((v) => v != null);
+  if (!meFilled) recs.push({ pri: 1, title: 'Rellena «Tu cuenta» para compararte', text: 'Con tus seguidores, publicaciones por semana, interacción y reseñas, las recomendaciones dejan de ser generales y te dicen exactamente dónde ganas y dónde pierdes.' });
+
+  // Ritmo de publicación
+  const freq = avg(comps.map((c) => c.postsPerWeek));
+  if (freq != null && me.postsPerWeek != null) {
+    if (me.postsPerWeek < freq) {
+      recs.push({ pri: 1, title: 'Publica más a menudo', text: `Publicas ${fmt1(me.postsPerWeek)} veces por semana y tu competencia ${fmt1(freq)}. Sube a ${Math.ceil(Math.max(freq, me.postsPerWeek + 1))} con el plan semanal (pestaña III): la constancia gana a la perfección.` });
+    } else {
+      recs.push({ pri: 3, title: 'Ritmo de publicación: vas por delante', text: `Publicas ${fmt1(me.postsPerWeek)} veces por semana frente a ${fmt1(freq)} de media. Mantén el ritmo y sube el listón en calidad: mejores ganchos y más guardados.` });
+    }
+  }
+
+  // Engagement
+  const ers = comps.map((c) => ({ c, er: engagement(c) })).filter((x) => x.er != null).sort((a, b) => b.er - a.er);
+  const myEr = engagement(me);
+  if (ers.length) {
+    const avgEr = avg(ers.map((x) => x.er));
+    if (myEr != null && myEr < avgEr) {
+      recs.push({ pri: 1, title: 'Tu contenido conecta menos que el de tu competencia', text: `Tu engagement es del ${fmtPct(myEr)} frente al ${fmtPct(avgEr)} de media. Trabaja el gancho de los dos primeros segundos y termina cada publicación con una pregunta concreta.` });
+    } else if (myEr != null) {
+      recs.push({ pri: 3, title: 'Tu comunidad responde mejor', text: `Tu engagement (${fmtPct(myEr)}) supera la media de tu competencia (${fmtPct(avgEr)}). Aprovéchalo: publica más para que ese interés llegue a más gente.` });
+    }
+    const top = ers[0];
+    if (myEr == null || top.er > myEr) {
+      recs.push({ pri: 2, title: `Estudia a ${top.c.name}`, text: `Es quien más engagement tiene (${fmtPct(top.er)}). Mira sus tres publicaciones con más interacción: apunta el gancho, la duración y el audio, y anota la mejor en su ficha para que el Generador cree tu versión mejorada.` });
+    }
+  }
+
+  // Reseñas y precio: si hay datos de competencia local, se compara con ella y no con referentes de otras ciudades.
+  const local = (list) => (list.some((c) => c.kind !== 'referente') ? list.filter((c) => c.kind !== 'referente') : list);
+  const withRev = local(comps.filter((c) => c.reviews != null)).sort((a, b) => b.reviews - a.reviews);
+  if (withRev.length && (me.reviews == null || me.reviews < withRev[0].reviews)) {
+    const top = withRev[0];
+    const target = me.reviews != null ? Math.max(10, Math.ceil((top.reviews - me.reviews) / 12)) : 15;
+    recs.push({ pri: me.reviews == null ? 2 : 1, title: 'Reseñas: la prueba social que decide la cita', text: `${top.name} tiene ${fmtNum(top.reviews)} reseñas${top.rating != null ? ` con un ${fmtRating(top.rating)}` : ''}${me.reviews != null ? `; tú, ${fmtNum(me.reviews)}` : ''}. Pide la reseña al terminar cada servicio y usa el QR del cartel (${state.brand.web}/resena). Meta: ${target} reseñas nuevas al mes.` });
+  }
+
+  // Precio
+  const priced = local(comps.filter((c) => c.price != null));
+  const myPrice = myCutPrice();
+  if (priced.length && myPrice != null) {
+    const avgP = avg(priced.map((c) => c.price));
+    const refs = priced.filter((c) => c.kind === 'referente').length;
+    const refNote = refs ? ' (incluye referentes de otras ciudades, donde los precios no son directamente comparables)' : '';
+    if (myPrice < avgP * 0.9) {
+      recs.push({ pri: 2, title: 'Cobras menos que tu lista: no lo regales', text: `Tu corte cuesta ${fmtEur(myPrice)} y la media de tu lista es ${fmtEur(avgP)}${refNote}. No compitas en precio: enseña el valor (diagnóstico, toalla caliente, navaja) y empuja los servicios de más valor como el Ritual Imperio.` });
+    } else if (myPrice > avgP * 1.1) {
+      recs.push({ pri: 2, title: 'Eres más caro: justifícalo en cada publicación', text: `Tu corte cuesta ${fmtEur(myPrice)} frente a ${fmtEur(avgP)} de media${refNote}. Cada publicación debe enseñar por qué: el ritual, el tiempo sin prisas y el detalle a navaja.` });
+    }
+  }
+
+  // Debilidades compartidas por la competencia
+  DIMENSIONS.forEach((d) => {
+    const vals = comps.map((c) => toNum(c.scores?.[d.id])).filter((v) => v != null);
+    if (vals.length && avg(vals) <= 2.5) {
+      recs.push({ pri: 2, title: `Oportunidad: ${d.label.toLowerCase()}`, text: `Tu competencia saca de media un ${fmt1(avg(vals))}/5. ${d.tactic}` });
+    }
+  });
+
+  // Huecos
+  const ranking = gapRanking();
+  const free = ranking.filter((g) => g.n && g.coverage <= 1 / 3 && !g.mine).slice(0, 3);
+  if (free.length) {
+    recs.push({ pri: 1, title: 'Huecos que nadie está ocupando', text: `${free.map((g) => `${g.label} (${g.count} de ${g.n})`).join(' · ')}. Llega primero: el Generador ya los prioriza cuando activas «Aprovechar huecos».` });
+  }
+  if (me.covers.length) {
+    const losing = ranking.filter((g) => g.n && g.coverage >= 0.5 && !g.mine).slice(0, 3);
+    if (losing.length) {
+      recs.push({ pri: 2, title: 'Donde te están ganando', text: `${losing.map((g) => g.label.toLowerCase()).join(', ')}: la mayoría lo hace y tú no. Incorpóralo con tu estética para no quedarte atrás.` });
+    }
+  }
+  const hist = coverage('historia');
+  if (!hist.count) {
+    recs.push({ pri: 2, title: 'Tu ventaja injusta: el Legado Imperio', text: 'Ninguna barbería de tu lista cuenta una historia propia. Roma, Itálica y Adriano son vuestros: publica una pieza de Legado cada semana y nadie podrá copiarte.' });
+  }
+  if (!comps.some((c) => c.covers.length)) {
+    recs.push({ pri: 2, title: 'Marca qué publica cada competidor', text: 'Sin eso no se pueden calcular los huecos. Edita cada ficha y marca los tipos de contenido que veas en sus últimas 12 publicaciones.' });
+  }
+  return recs.sort((a, b) => a.pri - b.pri);
+}
+
+/** Consejos concretos para superar a un competidor. */
+function beatTips(c) {
+  const tips = [];
+  const myEr = engagement(state.me), cEr = engagement(c);
+  if (cEr != null && myEr != null) {
+    tips.push(cEr > myEr
+      ? `Te supera en engagement (${fmtPct(cEr)} frente a tu ${fmtPct(myEr)}): estudia sus ganchos y sus audios.`
+      : `Le superas en engagement (${fmtPct(myEr)} frente a ${fmtPct(cEr)}): no bajes el ritmo.`);
+  }
+  if (c.covers.length) {
+    const missing = CT_PRIORITY.filter((id) => !c.covers.includes(id)).slice(0, 3).map((id) => CONTENT_TYPES.find((x) => x.id === id).label.toLowerCase());
+    if (missing.length) tips.push(`No publica ${missing.join(', ')}. Ocúpalo tú antes que nadie.`);
+  } else {
+    tips.push('Marca qué tipo de contenido publica para descubrir sus huecos.');
+  }
+  const scored = DIMENSIONS.map((d) => ({ d, v: toNum(c.scores?.[d.id]) })).filter((x) => x.v != null).sort((a, b) => a.v - b.v);
+  if (scored.length && scored[0].v <= 3) tips.push(`Su punto flojo es ${scored[0].d.label.toLowerCase()} (${scored[0].v}/5). ${scored[0].d.tactic}`);
+  if (c.bestPost) tips.push(`Lo que le funciona: «${c.bestPost}». El Generador te propone tu versión mejorada.`);
+  const myPrice = myCutPrice();
+  if (c.price != null && myPrice != null && c.price > myPrice) {
+    tips.push(`Cobra ${fmtEur(c.price)} por el corte y tú ${fmtEur(myPrice)}${c.kind === 'referente' ? ' (otra ciudad: tómalo como referencia)' : ''}: el mercado acepta precios más altos si se comunica el valor.`);
+  }
+  if (c.reviews != null && (state.me.reviews ?? 0) < c.reviews) tips.push(`Tiene ${fmtNum(c.reviews)} reseñas: pide la tuya al terminar cada servicio (${state.brand.web}/resena).`);
+  return tips;
+}
+
+/* ==========================================================================
+   Motor de ideas
+   ========================================================================== */
+
+/** Factor por pilar aprendido de los resultados del Banco (visualizaciones medias). */
+function learningFactors() {
+  const pub = state.saved.filter((s) => s.status === 'publicada' && toNum(s.results?.views) > 0);
+  if (pub.length < 3) return null;
+  const overall = avg(pub.map((s) => toNum(s.results.views)));
+  const by = {};
+  pub.forEach((s) => (by[s.pillar] = by[s.pillar] || []).push(toNum(s.results.views)));
+  const f = {};
+  Object.entries(by).forEach(([p, arr]) => (f[p] = clamp(avg(arr) / overall, 0.6, 1.8)));
+  return f;
+}
+
+function serviceBySlug(slugName) {
+  return state.services.find((s) => s.slug === slugName) || DEFAULT_SERVICES.find((s) => s.slug === slugName);
+}
+
+function fill(str, ctx) {
+  return String(str || '').replace(/\{(\w+)\}/g, (m, k) => (ctx[k] != null ? ctx[k] : m));
+}
+
+function hashtagsFor(t, ctx, serviceSlug) {
+  const city = slug(state.brand.city) || 'sevilla';
+  const area = slug(state.brand.area);
+  const brandTag = '#' + (slug(state.brand.name) || 'barberia');
+  const topic = [...(serviceSlug ? SERVICE_TAGS[serviceSlug] || [] : []), ...(PILLAR_TAGS[t.p] || [])].map((x) => x.replace('{city}', city));
+  const local = ['#barberia' + city, '#barbero' + city];
+  if (area && area !== city) local.push('#' + area);
+  if (t.p === 'legado') topic.unshift('#historiade' + city);
+  const tags = [brandTag, local[0], topic[0], topic[1], local[2] || local[1]];
+  return [...new Set(tags.filter(Boolean))].slice(0, 5);
+}
+
+/** Plantilla dinámica: «tu versión mejorada» de lo que le funciona a un competidor. */
+function competitorTemplates() {
+  return state.competitors.filter((c) => c.bestPost && c.bestPost.trim()).map((c) => ({
+    id: 'comp-' + c.id, p: 'oficio', f: 'reel', g: ['alcance', 'autoridad'], ct: 'transformacion', d: 2, dynamic: true,
+    t: `Tu versión mejorada de lo que le funciona a ${c.name}`,
+    h: ['(Usa un gancho del mismo tipo que el suyo, pero más directo)', 'Lo que nadie te cuenta de esto…'],
+    steps: [
+      `Analiza su publicación: «${c.bestPost}». Apunta qué dice en los dos primeros segundos, cuánto dura y qué audio usa.`,
+      'Copia la estructura, nunca la ejecución: mismo esqueleto, estética Imperio (fondo oscuro, bronce, luz cálida).',
+      'Añade lo que ellos no tienen: {ventaja}.',
+      'Publícalo en tu mejor horario y compara los resultados a los siete días en el Banco de ideas.',
+    ],
+    ost: '(mismo tipo de texto que el suyo, con tu tipografía)',
+    cap: 'Tu versión, con la firma de {marca}.',
+    why: `Lo que ya ha funcionado a ${c.name} demuestra que el público lo quiere; hacerlo mejor y con tu identidad te pone por delante.`,
+    competitor: c.name,
+  }));
+}
+
+/**
+ * Genera una idea. opts: goal, pillar, format, service, event ('auto' | 'none' | id),
+ * gaps (bool), focus (id de competidor), exclude (Set de ids), excludeFormats, ref (fecha).
+ */
+function generateIdea(opts = {}) {
+  const ref = opts.ref || new Date();
+  let activeEvents = [];
+  if (opts.event === 'auto' || opts.event == null) activeEvents = eventsBetween(startOfDay(ref), addDays(ref, 21)).map((e) => e.id);
+  else if (opts.event && opts.event !== 'none') activeEvents = [opts.event];
+  const forcedEvent = opts.event && !['auto', 'none'].includes(opts.event) ? opts.event : null;
+  const learn = opts.learn === false ? null : learningFactors();
+  const exclude = opts.exclude || new Set();
+
+  const pool = [...TEMPLATES, ...competitorTemplates()];
+  let candidates = pool.filter((t) => {
+    if (exclude.has(t.id)) return false;
+    if (opts.pillar && t.p !== opts.pillar) return false;
+    if (opts.format && t.f !== opts.format) return false;
+    if (opts.excludeFormats && opts.excludeFormats.includes(t.f)) return false;
+    if (opts.goal && !t.g.includes(opts.goal)) return false;
+    if (opts.service && !(t.s === 'any' || (Array.isArray(t.s) && t.s.includes(opts.service)))) return false;
+    if (t.ev && !activeEvents.includes(t.ev)) return false;
+    return true;
+  });
+  if (forcedEvent && candidates.some((t) => t.ev === forcedEvent)) candidates = candidates.filter((t) => t.ev === forcedEvent);
+  if (!candidates.length) return null;
+
+  const weighted = candidates.map((t) => {
+    let w = 1;
+    const cov = coverage(t.ct, opts.focus || undefined);
+    if (opts.gaps && cov.coverage != null) w *= 0.6 + 2.4 * (1 - cov.coverage);
+    if (t.ev) w *= 4;
+    if (t.dynamic) w *= opts.gaps ? 2 : 1.2;
+    if (learn && learn[t.p]) w *= learn[t.p];
+    if (recent.includes(t.id)) w *= 0.08;
+    return { t, w, cov };
+  });
+  const chosen = weightedPick(weighted);
+  if (!chosen) return null;
+  const { t, cov } = chosen;
+  recent.unshift(t.id);
+  recent.length = Math.min(recent.length, 30);
+
+  // Servicio
+  let serviceSlug = null;
+  if (t.s) {
+    const allowed = t.s === 'any' ? ADULT_SERVICES : t.s;
+    serviceSlug = opts.service && allowed.includes(opts.service) ? opts.service : pick(allowed);
+  }
+  const svc = serviceSlug ? serviceBySlug(serviceSlug) : null;
+  const evObj = t.ev ? eventsBetween(addDays(startOfDay(ref), -30), addDays(ref, 400), false).find((e) => e.id === t.ev && e.end >= startOfDay(ref)) : null;
+  const ctx = {
+    marca: state.brand.name,
+    handle: '@' + cleanHandle(state.brand.handle),
+    barrio: state.brand.area || state.brand.city,
+    ciudad: state.brand.city,
+    web: state.brand.web,
+    servicio: svc ? svc.name : 'tu servicio',
+    precio: svc ? fmtEur(svc.price) : '',
+    minutos: svc ? svc.minutes : '',
+    corte: pick(TREND_CUTS),
+    barba: pick(BEARD_STYLES),
+    meses: pick([3, 4, 5, 6]),
+    pregunta: pick(STREET_QUESTIONS),
+    mito: pick(MYTHS),
+    tipo: pick(CLIENT_TYPES),
+    negocio: pick(NEIGHBOURS),
+    ventaja: pick(EDGES),
+    evento: evObj ? evObj.label : '',
+  };
+  const goal = opts.goal && t.g.includes(opts.goal) ? opts.goal : t.g[0];
+  const isStory = t.f === 'story';
+  return {
+    uid: uid(),
+    templateId: t.id,
+    pillar: t.p,
+    format: t.f,
+    goal,
+    difficulty: t.d || 1,
+    title: fill(t.t, ctx),
+    hook: fill(pick(t.h), ctx),
+    steps: t.steps.map((s) => fill(s, ctx)),
+    ost: fill(t.ost, ctx),
+    caption: t.cap && t.cap !== '—' ? fill(t.cap, ctx) : '',
+    cta: isStory ? '' : pick(CTA_BY_GOAL[goal]),
+    hashtags: isStory || t.f === 'directo' ? [] : hashtagsFor(t, ctx, serviceSlug),
+    when: WHEN_BY_FORMAT[t.f],
+    why: fill(t.why, ctx),
+    note: t.note ? fill(t.note, ctx) : '',
+    service: svc ? svc.name : '',
+    ct: t.ct,
+    gap: cov.coverage != null ? { n: cov.n, count: cov.count, label: CONTENT_TYPES.find((x) => x.id === t.ct)?.label || '' } : null,
+    event: evObj ? { id: evObj.id, label: evObj.label, date: toISO(evObj.start) } : null,
+    competitor: t.competitor || '',
+    learned: !!(learn && learn[t.p] && learn[t.p] > 1.1),
+    createdAt: new Date().toISOString(),
+  };
+}
+
+function edgeText(idea) {
+  if (idea.competitor) return `Inspirada en lo que le funciona a ${idea.competitor}, con tu firma.`;
+  if (!idea.gap) return '';
+  const { n, count, label } = idea.gap;
+  if (count === 0) return `Hueco libre: ninguno de tus ${n} competidores analizados publica «${label.toLowerCase()}». Llegas primero.`;
+  if (count / n <= 1 / 3) return `Poco explotado: solo ${count} de ${n} competidores publica «${label.toLowerCase()}».`;
+  if (count / n >= 2 / 3) return `Terreno disputado (${count} de ${n} lo hacen): gana con mejor gancho y la estética Imperio.`;
+  return '';
+}
+
+function ideaToText(idea) {
+  const lines = [
+    `IDEA · ${idea.title}`,
+    `${FORMATS[idea.format]?.label || idea.format} · ${PILLARS[idea.pillar]?.label || ''} · Objetivo: ${GOALS[idea.goal]?.label || ''}`,
+    '',
+    `Gancho (2 primeros segundos): ${idea.hook}`,
+    '',
+    'Guion:',
+    ...idea.steps.map((s, i) => `${i + 1}. ${s}`),
+    '',
+    `Texto en pantalla: ${idea.ost}`,
+  ];
+  if (idea.caption) lines.push(`Pie de foto: ${idea.caption}`);
+  if (idea.cta) lines.push(`Llamada a la acción: ${idea.cta}`);
+  if (idea.hashtags?.length) lines.push(idea.hashtags.join(' '));
+  lines.push('', `Cuándo publicar: ${idea.when}`);
+  if (idea.note) lines.push(`Ojo: ${idea.note}`);
+  return lines.join('\n');
+}
+
+/* ==========================================================================
+   Plan semanal
+   ========================================================================== */
+
+const PLAN_LAYOUT = {
+  3: [[2, 'oficio'], [4, 'promo'], [0, 'flex']],
+  4: [[1, 'oficio'], [3, 'educacion'], [4, 'promo'], [0, 'flex']],
+  5: [[1, 'oficio'], [2, 'educacion'], [4, 'promo'], [5, 'flex'], [0, 'flex']],
+  6: [[1, 'oficio'], [2, 'educacion'], [3, 'flex'], [4, 'promo'], [5, 'flex'], [0, 'flex']],
+  7: [[1, 'oficio'], [2, 'educacion'], [3, 'flex'], [4, 'promo'], [5, 'flex'], [6, 'backstage'], [0, 'flex']],
+};
+const FLEX_PILLARS = ['legado', 'tendencias', 'comunidad', 'sevilla', 'backstage'];
+
+/** Pilares flexibles ordenados por oportunidad (huecos de la competencia y resultados propios). */
+function flexOrder() {
+  const learn = learningFactors() || {};
+  const score = (p) => {
+    const cts = CONTENT_TYPES.filter((c) => c.pillar === p);
+    const gaps = avg(cts.map((c) => coverage(c.id).coverage).map((v) => (v == null ? null : 1 - v)));
+    return (gaps ?? 0.5) * (learn[p] || 1) + (p === 'legado' ? 0.15 : 0);
+  };
+  return [...FLEX_PILLARS].sort((a, b) => score(b) - score(a));
+}
+
+function slotTime(format, dow) {
+  if (format === 'carrusel' || format === 'post') return dow === 0 || dow === 6 ? '11:30' : '13:30';
+  if (format === 'directo') return '21:00';
+  if (format === 'story') return '09:30';
+  return '20:30';
+}
+
+function buildPlan() {
+  const cfg = state.ui.plan;
+  const start = fromISO(cfg.start) || nextMonday();
+  const perWeek = clamp(Number(cfg.perWeek) || 4, 3, 7);
+  const weeks = clamp(Number(cfg.weeks) || 2, 1, 6);
+  const layout = PLAN_LAYOUT[perWeek];
+  const order = flexOrder();
+  const used = new Set();
+  const items = [];
+  const stories = [];
+  let flexCursor = 0;
+  for (let w = 0; w < weeks; w++) {
+    const weekStart = addDays(start, w * 7);
+    const weekEnd = addDays(weekStart, 6);
+    const evs = eventsBetween(weekStart, weekEnd, true, 0.5).filter((e) => EVENT_IDS.includes(e.id));
+    let pendingEvent = evs.find((e) => TEMPLATES.some((t) => t.ev === e.id && !used.has(t.id)));
+    layout.forEach(([dow, pillar]) => {
+      const date = addDays(weekStart, (dow + 6) % 7);
+      let opts = { pillar, event: 'none', gaps: true, exclude: used, excludeFormats: ['story'], ref: date };
+      let kind = pillar;
+      if (pillar === 'flex' && pendingEvent) {
+        opts = { event: pendingEvent.id, gaps: true, exclude: used, excludeFormats: ['story'], ref: date };
+        kind = 'event';
+        pendingEvent = null;
+      } else if (pillar === 'flex') {
+        opts.pillar = order[flexCursor % order.length];
+        flexCursor++;
+      }
+      const idea = generateIdea(opts) || generateIdea({ ...opts, pillar: '', event: 'none' });
+      if (!idea) return;
+      used.add(idea.templateId);
+      items.push({ date: toISO(date), time: slotTime(idea.format, dow), kind, idea });
+    });
+    if (cfg.stories) {
+      for (let d = 0; d < 6; d++) {
+        const date = addDays(weekStart, d);
+        stories.push({ date: toISO(date), text: fill(STORY_IDEAS[(w * 7 + d) % STORY_IDEAS.length], { web: state.brand.web }) });
+      }
+    }
+    flexCursor += 1;
+  }
+  state.plan = { createdAt: new Date().toISOString(), start: toISO(start), weeks, perWeek, items, stories };
+  save();
+}
+
+function nextMonday() {
+  const today = startOfDay(new Date());
+  return today.getDay() === 1 ? today : addDays(mondayOf(today), 7);
+}
+
+/* ==========================================================================
+   Pintado
+   ========================================================================== */
+
+function selectOptions(map, value, emptyLabel) {
+  const opts = Object.entries(map).map(([k, v]) => `<option value="${esc(k)}"${k === value ? ' selected' : ''}>${esc(v.label || v)}</option>`).join('');
+  return (emptyLabel != null ? `<option value="">${esc(emptyLabel)}</option>` : '') + opts;
+}
+
+function dots(n) {
+  return `<span class="dots" title="Dificultad ${n} de 3">${'●'.repeat(n)}<i>${'●'.repeat(3 - n)}</i></span>`;
+}
+
+function profileStats(p) {
+  const er = engagement(p);
+  return `<div class="stats">
+    <div class="stat"><b>${fmtNum(p.igFollowers)}</b><span>Seguidores IG</span></div>
+    <div class="stat"><b>${fmt1(p.postsPerWeek)}</b><span>Publ. / semana</span></div>
+    <div class="stat"><b>${fmtPct(er)}</b><span>Engagement</span></div>
+    <div class="stat"><b>${fmtRating(p.rating)}</b><span>Nota reseñas</span></div>
+    <div class="stat"><b>${fmtNum(p.reviews)}</b><span>Reseñas</span></div>
+    <div class="stat"><b>${fmtEur(p.price)}</b><span>Corte</span></div>
+  </div>`;
+}
+
+function updatedLabel(p) {
+  if (!p.updatedAt) return '';
+  const days = Math.round((Date.now() - new Date(p.updatedAt)) / DAY);
+  const txt = days <= 0 ? 'hoy' : days === 1 ? 'ayer' : `hace ${days} días`;
+  return `<span class="updated">Actualizado ${txt}${days > 35 ? ' · toca revisarlo' : ''}</span>`;
+}
+
+function renderCompetencia() {
+  const el = $('#panel-competencia');
+  const comps = state.competitors;
+  const me = state.me;
+  const pendingPresets = PRESETS.filter((p) => !comps.some((c) => c.presetId === p.presetId || cleanHandle(c.ig).toLowerCase() === p.ig.toLowerCase()));
+
+  let html = `<div class="section-head">
+      <div><h2>Análisis de la competencia</h2>
+      <p>Apunta los números de las barberías con las que compites (y de las que admiras). La herramienta calcula su engagement, encuentra los huecos que nadie ocupa y te dice cómo superar a cada una.</p></div>
+      <button class="btn primary" data-action="comp-add">+ Añadir competidor</button>
+    </div>
+    <details class="guide"${comps.length ? '' : ' open'}>
+      <summary>Cómo analizar a un competidor en 10 minutos</summary>
+      <ol>
+        <li>Abre su perfil de Instagram (y TikTok si tiene) en el móvil.</li>
+        <li><b>Publicaciones por semana:</b> cuenta las del último mes y divide entre 4.</li>
+        <li><b>Interacción media:</b> suma «me gusta» + comentarios de sus últimas 9 publicaciones y divide entre 9. Si oculta los «me gusta», apunta solo los comentarios y anótalo.</li>
+        <li><b>Visualizaciones:</b> en la pestaña de reels, la media de los últimos 6.</li>
+        <li><b>Reseñas:</b> nota y número en Google Maps (o Booksy, Fresha…).</li>
+        <li>Marca qué tipo de contenido publica, puntúalo del 1 al 5 y apunta la publicación que mejor le ha funcionado.</li>
+        <li>Repite cada mes: verás quién crece y por qué.</li>
+      </ol>
+    </details>`;
+
+  if (pendingPresets.length) {
+    html += `<div class="card" style="margin-top:12px"><div class="row">
+      <div><div class="eyebrow">Ficha preparada</div>
+      <p style="margin:4px 0 0">${pendingPresets.map((p) => `<b>${esc(p.name)}</b> (@${esc(p.ig)}, ${esc(p.area)})`).join(', ')}: análisis con datos públicos listo para cargar.</p></div>
+      <span class="spacer"></span>
+      <button class="btn" data-action="load-presets">Cargar ficha</button>
+    </div></div>`;
+  }
+
+  // Tu cuenta
+  html += `<h3 class="block-title"><span class="num">I</span>Tu cuenta</h3>
+    <div class="card comp-card">
+      <div class="row"><h3>${esc(state.brand.name)}</h3><span class="chip bronze">Tú</span><span class="spacer"></span>${updatedLabel(me)}<button class="btn small" data-action="me-edit">Editar mis datos</button></div>
+      <div class="handle">@${esc(cleanHandle(me.ig || state.brand.handle))}</div>
+      ${profileStats({ ...me, price: myCutPrice() })}
+      ${me.covers.length ? `<small>Publicas: ${me.covers.map((id) => esc(CONTENT_TYPES.find((c) => c.id === id)?.label.toLowerCase())).join(', ')}.</small>` : '<small>Marca qué tipo de contenido publicas para ver dónde te están ganando.</small>'}
+    </div>`;
+
+  if (!comps.length) {
+    html += `<div class="empty" style="margin-top:20px"><h3>Empieza por aquí</h3>
+      <p>Añade 3 a 5 barberías de ${esc(state.brand.city)} con las que compites. Con eso la herramienta ya detecta los huecos y el Generador te propone ideas para ocuparlos.</p>
+      <button class="btn primary" data-action="comp-add">+ Añadir el primero</button>
+      <p style="margin-top:14px"><small>¿Con prisa? El <a href="#" data-action="go" data-tab="generador">Generador</a> ya funciona sin datos.</small></p></div>`;
+    el.innerHTML = html;
+    return;
+  }
+
+  // Tabla comparativa
+  const rows = [{ ...me, name: state.brand.name, price: myCutPrice(), _me: true }, ...comps]
+    .map((p) => ({ p, idx: imperioIndex(p), er: engagement(p) }))
+    .sort((a, b) => (b.idx ?? -1) - (a.idx ?? -1));
+  html += `<h3 class="block-title"><span class="num">II</span>Comparativa</h3>
+    <div class="table-scroll"><table>
+      <thead><tr><th>Barbería</th><th>Tipo</th><th class="num">Seguidores IG</th><th class="num">TikTok</th><th class="num">Publ./sem</th><th class="num">Interacción</th><th class="num">Engagement</th><th class="num">Vis./reel</th><th class="num">Nota</th><th class="num">Reseñas</th><th class="num">Corte</th><th class="num">Índice</th></tr></thead>
+      <tbody>${rows.map(({ p, idx, er }) => `<tr class="${p._me ? 'me' : ''}">
+        <td><b>${esc(p.name)}</b></td>
+        <td>${p._me ? '<span class="chip bronze">Tú</span>' : p.kind === 'referente' ? '<span class="chip">Referente</span>' : '<span class="chip">Local</span>'}</td>
+        <td class="num">${fmtNum(p.igFollowers)}</td><td class="num">${fmtNum(p.tiktokFollowers)}</td>
+        <td class="num">${fmt1(p.postsPerWeek)}</td><td class="num">${fmtNum(p.avgInteractions)}</td>
+        <td class="num">${fmtPct(er)} ${erChip(er)}</td><td class="num">${fmtNum(p.avgViews)}</td>
+        <td class="num">${fmtRating(p.rating)}</td><td class="num">${fmtNum(p.reviews)}</td><td class="num">${fmtEur(p.price)}</td>
+        <td class="num"><b>${idx == null ? '—' : idx}</b></td></tr>`).join('')}</tbody>
+    </table></div>
+    <p><small>Engagement = interacción media ÷ seguidores. Para cuentas locales: menos del 1 % es bajo, 1–3 % normal, 3–6 % bueno y más del 6 % excelente. El índice (0–100) combina tu valoración, engagement, constancia y reseñas (necesita al menos dos de ellos); es orientativo.</small></p>`;
+
+  // Huecos
+  const ranking = gapRanking();
+  const anyCovers = ranking.some((g) => g.n);
+  html += `<h3 class="block-title"><span class="num">III</span>Mapa de huecos</h3>
+    <div class="card">${anyCovers ? ranking.map((g) => {
+      const st = gapStatus(g);
+      const pct = g.coverage == null ? 0 : Math.round(g.coverage * 100);
+      return `<div class="gap-row">
+        <div class="lbl">${esc(g.label)}<small>${esc(PILLARS[g.pillar].label)}${g.who.length ? ' · ' + esc(g.who.join(', ')) : ''}</small></div>
+        <div class="bar-wrap"><div class="bar"><span style="width:${pct}%"></span></div><div class="bar-label">${g.count} de ${g.n} competidores</div></div>
+        <div class="row">${g.mine ? '<span class="chip bronze">Tú sí</span>' : ''}<span class="chip ${st.cls}">${st.label}</span></div>
+      </div>`;
+    }).join('') : '<p class="muted" style="margin:0">Edita cada competidor y marca qué tipo de contenido publica: aquí verás qué nadie está haciendo.</p>'}
+    </div>
+    ${anyCovers ? '<div class="row" style="margin-top:12px"><button class="btn primary" data-action="gen-gaps">Generar ideas para ocupar los huecos</button></div>' : ''}`;
+
+  // Recomendaciones
+  const recs = recommendations();
+  html += `<h3 class="block-title"><span class="num">IV</span>Recomendaciones</h3>
+    <div class="card">${recs.length ? recs.map((r, i) => `<div class="rec ${r.pri === 1 ? 'p1' : ''}"><span class="n">${toRoman(i + 1)}</span><div><h4>${esc(r.title)}</h4><p>${esc(r.text)}</p></div></div>`).join('') : '<p class="muted" style="margin:0">Completa algún dato más para recibir recomendaciones.</p>'}</div>`;
+
+  // Fichas
+  html += `<h3 class="block-title"><span class="num">V</span>Cómo superar a cada uno</h3><div class="grid grid-2">`;
+  comps.forEach((c) => {
+    const tips = beatTips(c);
+    html += `<article class="card comp-card">
+      <div class="row"><h3>${esc(c.name)}</h3>${c.kind === 'referente' ? '<span class="chip">Referente</span>' : '<span class="chip">Local</span>'}</div>
+      <div class="handle">${c.ig ? '@' + esc(cleanHandle(c.ig)) : ''}${c.tiktok ? ' · TikTok @' + esc(cleanHandle(c.tiktok)) : ''}${c.area ? ' · ' + esc(c.area) : ''}</div>
+      ${profileStats(c)}
+      <ul class="tips">${tips.map((t) => `<li>${esc(t)}</li>`).join('')}</ul>
+      ${c.strengths ? `<p><small><b>Fuerte:</b> ${esc(c.strengths)}</small></p>` : ''}
+      ${c.weaknesses ? `<p><small><b>Débil:</b> ${esc(c.weaknesses)}</small></p>` : ''}
+      ${c.notes ? `<p><small><b>Notas:</b> ${esc(c.notes)}</small></p>` : ''}
+      <div class="row" style="margin-top:12px">${updatedLabel(c)}<span class="spacer"></span>
+        <button class="btn small" data-action="comp-beat" data-id="${esc(c.id)}">Ideas para superarle</button>
+        <button class="btn small" data-action="comp-edit" data-id="${esc(c.id)}">Editar</button>
+        <button class="btn small danger" data-action="comp-del" data-id="${esc(c.id)}">Eliminar</button>
+      </div>
+    </article>`;
+  });
+  html += '</div>';
+  el.innerHTML = html;
+}
+
+function ideaCard(idea, ctx = 'gen') {
+  const isSaved = state.saved.some((s) => s.uid === idea.uid);
+  const edge = edgeText(idea);
+  return `<article class="idea" data-uid="${esc(idea.uid)}">
+    <div class="meta">
+      <span class="chip bronze">${esc(PILLARS[idea.pillar]?.label || '')}</span>
+      <span class="chip">${esc(FORMATS[idea.format]?.label || '')}</span>
+      <span class="chip">${esc(GOALS[idea.goal]?.label || '')}</span>
+      ${idea.event ? `<span class="chip purple">${esc(idea.event.label)}</span>` : ''}
+      ${idea.gap && idea.gap.count === 0 ? '<span class="chip good">Hueco libre</span>' : ''}
+      ${idea.learned ? '<span class="chip good">Te funciona</span>' : ''}
+      <span class="chip">Dificultad ${dots(idea.difficulty)}</span>
+    </div>
+    <h3>${esc(idea.title)}</h3>
+    <p class="hook"><small>Gancho · primeros 2 segundos</small>«${esc(idea.hook)}»</p>
+    <div class="idea-grid">
+      <div>
+        <h5>Guion</h5>
+        <ol>${idea.steps.map((s) => `<li>${esc(s)}</li>`).join('')}</ol>
+        <h5>Texto en pantalla</h5>
+        <div class="box">${esc(idea.ost)}</div>
+      </div>
+      <div>
+        ${idea.caption || idea.cta ? `<h5>Pie de foto</h5><div class="box">${esc(idea.caption)}${idea.cta ? `<br><br>${esc(idea.cta)}` : ''}${idea.hashtags?.length ? `<div class="tags">${esc(idea.hashtags.join(' '))}</div>` : ''}</div>` : ''}
+        <h5>Cuándo publicar</h5>
+        <p class="why">${esc(idea.when)}. <small>Confírmalo en Estadísticas → Audiencia.</small></p>
+        <h5>Por qué funciona</h5>
+        <p class="why">${esc(idea.why)}</p>
+        ${edge ? `<p class="edge">${esc(edge)}</p>` : ''}
+        ${idea.note ? `<p class="note">Ojo: ${esc(idea.note)}</p>` : ''}
+      </div>
+    </div>
+    ${ctx === 'gen' ? `<div class="actions">
+      <button class="btn ${isSaved ? '' : 'primary'} small" data-action="idea-save" data-uid="${esc(idea.uid)}" ${isSaved ? 'disabled' : ''}>${isSaved ? '★ En el banco' : '☆ Guardar en el banco'}</button>
+      <button class="btn small" data-action="idea-copy" data-uid="${esc(idea.uid)}">Copiar (para WhatsApp)</button>
+      <button class="btn small" data-action="idea-replace" data-uid="${esc(idea.uid)}">Otra distinta</button>
+      <button class="btn small ghost" data-action="idea-discard" data-uid="${esc(idea.uid)}">Descartar</button>
+    </div>` : ''}
+  </article>`;
+}
+
+function renderGenerador() {
+  const el = $('#panel-generador');
+  const g = state.ui.gen;
+  const services = Object.fromEntries(state.services.map((s) => [s.slug, { label: s.name }]));
+  const eventsMap = { auto: { label: 'Automático (próximas fechas)' }, none: { label: 'Ninguna' } };
+  EVENT_IDS.forEach((id) => (eventsMap[id] = { label: eventLabel(id) }));
+  const upcoming = eventsBetween(startOfDay(new Date()), addDays(new Date(), 90), false).filter((e) => EVENT_IDS.includes(e.id)).slice(0, 5);
+  const focus = state.competitors.find((c) => c.id === g.focus);
+  const hasCovers = state.competitors.some((c) => c.covers.length);
+  const learn = learningFactors();
+  const best = learn ? Object.entries(learn).sort((a, b) => b[1] - a[1])[0] : null;
+
+  el.innerHTML = `<div class="section-head">
+      <div><h2>Generador de ideas</h2>
+      <p>Ideas listas para grabar, con gancho, guion, texto y pie de foto. Cuanta más información tenga de tu competencia y de tus resultados, más afinadas salen.</p></div>
+    </div>
+    <div class="card no-print">
+      <div class="filters">
+        <label class="field">Objetivo<select data-gen="goal">${selectOptions(GOALS, g.goal, 'Cualquiera')}</select></label>
+        <label class="field">Pilar<select data-gen="pillar">${selectOptions(PILLARS, g.pillar, 'Cualquiera')}</select></label>
+        <label class="field">Formato<select data-gen="format">${selectOptions(FORMATS, g.format, 'Cualquiera')}</select></label>
+        <label class="field">Servicio<select data-gen="service">${selectOptions(services, g.service, 'Cualquiera')}</select></label>
+        <label class="field">Fechas especiales<select data-gen="event">${selectOptions(eventsMap, g.event, null)}</select></label>
+      </div>
+      <div class="row" style="margin-top:14px">
+        <label class="switch"><input type="checkbox" data-gen="gaps" ${g.gaps ? 'checked' : ''}> Aprovechar huecos de la competencia${hasCovers ? '' : ' <small>(aún sin datos)</small>'}</label>
+        ${focus ? `<span class="chip bronze">Objetivo: superar a ${esc(focus.name)} <button class="btn ghost small" style="min-height:0;padding:0 2px;border:0" data-action="clear-focus" aria-label="Quitar">✕</button></span>` : ''}
+        ${best && best[1] > 1.1 ? `<span class="chip good">Aprendiendo de tus resultados: ${esc(PILLARS[best[0]]?.label || best[0])} te funciona mejor</span>` : ''}
+      </div>
+      <div class="row" style="margin-top:14px">
+        <button class="btn" data-action="gen" data-n="1">Generar 1 idea</button>
+        <button class="btn primary" data-action="gen" data-n="5">Generar 5 ideas</button>
+        ${genResults.length ? '<button class="btn ghost" data-action="gen-clear">Limpiar</button>' : ''}
+      </div>
+      ${upcoming.length ? `<div style="margin-top:14px"><small>Próximas fechas:</small> <div class="event-chips" style="margin-top:6px">${upcoming.map((e) => `<span class="chip purple">${esc(e.label)} · ${esc(whenLabel(e))}</span>`).join('')}</div></div>` : ''}
+    </div>
+    <div id="gen-results" style="margin-top:18px">${genResults.length ? genResults.map((i) => ideaCard(i)).join('') : '<div class="empty"><h3>Pulsa «Generar»</h3><p>Prueba con «Generar 5 ideas» sin filtros y luego afina por objetivo o pilar.</p></div>'}</div>`;
+}
+
+function genOpts() {
+  const g = state.ui.gen;
+  return { goal: g.goal, pillar: g.pillar, format: g.format, service: g.service, event: g.event, gaps: g.gaps, focus: g.focus };
+}
+
+function runGenerator(n) {
+  const exclude = new Set();
+  const out = [];
+  for (let i = 0; i < n; i++) {
+    const idea = generateIdea({ ...genOpts(), exclude });
+    if (!idea) break;
+    exclude.add(idea.templateId);
+    out.push(idea);
+  }
+  if (!out.length) {
+    toast('No hay ideas con esos filtros. Quita alguno y vuelve a probar.');
+    return;
+  }
+  genResults = out;
+  renderGenerador();
+  const ev = state.ui.gen.event;
+  const specific = out.filter((i) => i.event && i.event.id === ev).length;
+  if (out.length < n) toast(`Solo hay ${out.length} ideas con esos filtros.`);
+  else if (!['auto', 'none'].includes(ev) && specific < out.length) toast(`${specific} ${specific === 1 ? 'idea es' : 'ideas son'} de ${eventLabel(ev)}; el resto, generales.`);
+}
+
+function renderPlan() {
+  const el = $('#panel-plan');
+  const cfg = state.ui.plan;
+  const plan = state.plan;
+  const startVal = cfg.start || toISO(nextMonday());
+  let html = `<div class="section-head">
+      <div><h2>Plan semanal</h2>
+      <p>Un calendario equilibrado: oficio para atraer, educación para que te guarden, reservas el jueves para llenar el finde y los huecos de la competencia en el resto. Las fechas especiales entran solas.</p></div>
+    </div>
+    <div class="card no-print"><div class="filters">
+      <label class="field">Empieza el<input type="date" data-plan="start" value="${esc(startVal)}"></label>
+      <label class="field">Semanas<select data-plan="weeks">${[1, 2, 3, 4].map((n) => `<option value="${n}"${+cfg.weeks === n ? ' selected' : ''}>${n}</option>`).join('')}</select></label>
+      <label class="field">Publicaciones por semana<select data-plan="perWeek">${[3, 4, 5, 6, 7].map((n) => `<option value="${n}"${+cfg.perWeek === n ? ' selected' : ''}>${n}</option>`).join('')}</select></label>
+    </div>
+    <div class="row" style="margin-top:14px">
+      <label class="switch"><input type="checkbox" data-plan="stories" ${cfg.stories ? 'checked' : ''}> Incluir stories diarias</label>
+      <span class="spacer"></span>
+      <button class="btn primary" data-action="plan-build">${plan ? 'Rehacer plan' : 'Generar plan'}</button>
+    </div></div>`;
+
+  if (!plan) {
+    html += '<div class="empty" style="margin-top:18px"><h3>Aún no hay plan</h3><p>Elige cuántas veces quieres publicar y pulsa «Generar plan». Si es tu primera vez, empieza con 4 por semana: es mejor poco y constante.</p></div>';
+    el.innerHTML = html;
+    return;
+  }
+
+  const start = fromISO(plan.start);
+  const evs = eventsBetween(start, addDays(start, plan.weeks * 7 - 1)).filter((e) => EVENT_IDS.includes(e.id));
+  html += `<div class="row no-print" style="margin-top:18px">
+      <small>Creado el ${esc(dfLong.format(new Date(plan.createdAt)))} · ${plan.items.length} publicaciones</small><span class="spacer"></span>
+      <button class="btn small" data-action="plan-copy">Copiar (para WhatsApp)</button>
+      <button class="btn small" data-action="plan-csv">Descargar para Excel</button>
+      <button class="btn small" data-action="plan-print">Imprimir</button>
+      <button class="btn small" data-action="plan-save-all">☆ Guardar todo en el banco</button>
+    </div>
+    ${evs.length ? `<div class="event-chips" style="margin-top:12px">${evs.map((e) => `<span class="chip purple">${esc(e.label)} · ${esc(dfShort.format(e.start))}</span>`).join('')}</div>` : ''}`;
+
+  for (let w = 0; w < plan.weeks; w++) {
+    const ws = addDays(start, w * 7);
+    const we = addDays(ws, 6);
+    const items = plan.items.map((it, i) => ({ ...it, i })).filter((it) => { const d = fromISO(it.date); return d >= ws && d <= we; });
+    const stories = (plan.stories || []).filter((s) => { const d = fromISO(s.date); return d >= ws && d <= we; });
+    html += `<div class="week"><h3>Semana ${toRoman(w + 1)} <small style="font-family:var(--sans);font-size:14px">· ${esc(dfShort.format(ws))} – ${esc(dfShort.format(we))}</small></h3>`;
+    items.forEach((it) => {
+      const idea = it.idea;
+      const saved = state.saved.some((s) => s.uid === idea.uid);
+      html += `<div class="slot">
+        <div class="when"><b>${esc(dfDay.format(fromISO(it.date)))}</b><span>${esc(it.time)} · ${esc(FORMATS[idea.format]?.label || '')}</span></div>
+        <div>
+          <div class="row"><span class="chip bronze">${esc(PILLARS[idea.pillar]?.label || '')}</span>${idea.event ? `<span class="chip purple">${esc(idea.event.label)}</span>` : ''}${idea.gap && idea.gap.count === 0 ? '<span class="chip good">Hueco libre</span>' : ''}</div>
+          <h4>${esc(idea.title)}</h4>
+          <p>«${esc(idea.hook)}»</p>
+          <details><summary>Ver guion completo</summary>${ideaCard(idea, 'plan')}</details>
+        </div>
+        <div class="slot-actions no-print">
+          <button class="btn small" data-action="plan-swap" data-i="${it.i}">Cambiar</button>
+          <button class="btn small" data-action="plan-save" data-i="${it.i}" ${saved ? 'disabled' : ''}>${saved ? '★ Guardada' : '☆ Guardar'}</button>
+        </div>
+      </div>`;
+    });
+    if (stories.length) {
+      html += `<div class="stories"><b>Stories de la semana</b> · cada día al abrir: huecos libres de hoy con enlace a la reserva. Además:<ul>${stories.map((s) => `<li><b style="text-transform:capitalize">${esc(new Intl.DateTimeFormat('es-ES', { weekday: 'short' }).format(fromISO(s.date)))}:</b> ${esc(s.text)}</li>`).join('')}</ul></div>`;
+    }
+    html += '</div>';
+  }
+  html += '<p><small>Horarios orientativos: revisa en Instagram → Estadísticas → Audiencia a qué horas está conectada tu gente y ajústalos.</small></p>';
+  el.innerHTML = html;
+}
+
+function renderBanco() {
+  const el = $('#panel-banco');
+  const filter = state.ui.bankFilter;
+  const list = state.saved.filter((s) => !filter || s.status === filter);
+  const counts = { pendiente: 0, grabada: 0, publicada: 0 };
+  state.saved.forEach((s) => (counts[s.status] = (counts[s.status] || 0) + 1));
+  const pub = state.saved.filter((s) => s.status === 'publicada');
+  const byPillar = {};
+  pub.forEach((s) => {
+    const b = (byPillar[s.pillar] = byPillar[s.pillar] || { n: 0, views: [], inter: [], bookings: 0 });
+    b.n++;
+    if (toNum(s.results?.views) != null) b.views.push(toNum(s.results.views));
+    if (toNum(s.results?.interactions) != null) b.inter.push(toNum(s.results.interactions));
+    b.bookings += toNum(s.results?.bookings) || 0;
+  });
+  const pillarRows = Object.entries(byPillar).sort((a, b) => (avg(b[1].views) ?? -1) - (avg(a[1].views) ?? -1));
+
+  let html = `<div class="section-head">
+      <div><h2>Banco de ideas</h2>
+      <p>Guarda aquí lo que vas a grabar. Cuando lo publiques, apunta los resultados a los 7 días: el Generador aprende qué te funciona y te propone más de eso.</p></div>
+    </div>
+    <div class="kpis">
+      <div class="kpi"><b>${state.saved.length}</b><span>Ideas guardadas</span></div>
+      <div class="kpi"><b>${counts.pendiente || 0}</b><span>Por grabar</span></div>
+      <div class="kpi"><b>${counts.grabada || 0}</b><span>Grabadas</span></div>
+      <div class="kpi"><b>${counts.publicada || 0}</b><span>Publicadas</span></div>
+    </div>`;
+
+  if (pillarRows.length) {
+    html += `<h3 class="block-title"><span class="num">I</span>Lo que mejor te funciona</h3>
+      <div class="table-scroll"><table><thead><tr><th>Pilar</th><th class="num">Publicadas</th><th class="num">Visualizaciones medias</th><th class="num">Interacción media</th><th class="num">Reservas</th></tr></thead>
+      <tbody>${pillarRows.map(([p, b]) => `<tr><td>${esc(PILLARS[p]?.label || p)}</td><td class="num">${b.n}</td><td class="num">${fmtNum(avg(b.views))}</td><td class="num">${fmtNum(avg(b.inter))}</td><td class="num">${fmtNum(b.bookings)}</td></tr>`).join('')}</tbody></table></div>
+      ${learningFactors() ? '<p><small>El Generador ya usa estos resultados para priorizar ideas.</small></p>' : `<p><small>Con 3 publicaciones con visualizaciones apuntadas, el Generador empezará a aprender de ti (llevas ${pub.filter((s) => toNum(s.results?.views) > 0).length}).</small></p>`}`;
+  }
+
+  html += `<div class="row" style="margin:22px 0 12px">
+      <label class="field" style="min-width:200px">Mostrar<select data-bank-filter>
+        <option value="">Todas</option>
+        <option value="pendiente"${filter === 'pendiente' ? ' selected' : ''}>Por grabar</option>
+        <option value="grabada"${filter === 'grabada' ? ' selected' : ''}>Grabadas</option>
+        <option value="publicada"${filter === 'publicada' ? ' selected' : ''}>Publicadas</option>
+      </select></label>
+    </div>`;
+
+  if (!list.length) {
+    html += `<div class="empty"><h3>${state.saved.length ? 'Nada con este filtro' : 'El banco está vacío'}</h3><p>Guarda ideas desde el Generador o el Plan semanal con «☆ Guardar».</p></div>`;
+    el.innerHTML = html;
+    return;
+  }
+
+  html += list.map((s) => `<article class="saved status-${esc(s.status)}" data-saved="${esc(s.uid)}">
+    <div class="row">
+      <span class="chip bronze">${esc(PILLARS[s.pillar]?.label || '')}</span><span class="chip">${esc(FORMATS[s.format]?.label || '')}</span>
+      ${s.event ? `<span class="chip purple">${esc(s.event.label)}</span>` : ''}
+      <span class="spacer"></span>
+      <select data-saved-field="status" aria-label="Estado" style="width:auto">
+        <option value="pendiente"${s.status === 'pendiente' ? ' selected' : ''}>Por grabar</option>
+        <option value="grabada"${s.status === 'grabada' ? ' selected' : ''}>Grabada</option>
+        <option value="publicada"${s.status === 'publicada' ? ' selected' : ''}>Publicada</option>
+      </select>
+    </div>
+    <h4>${esc(s.title)}</h4>
+    <p style="margin:0;color:var(--stone-300)">«${esc(s.hook)}»</p>
+    <div class="results">
+      <label class="field">Fecha de publicación<input type="date" data-saved-field="publishedAt" value="${esc(s.publishedAt || '')}"></label>
+      <label class="field">Visualizaciones<input type="number" min="0" data-saved-field="views" value="${esc(s.results?.views ?? '')}"></label>
+      <label class="field">Interacciones<input type="number" min="0" data-saved-field="interactions" value="${esc(s.results?.interactions ?? '')}"></label>
+      <label class="field">Reservas / mensajes<input type="number" min="0" data-saved-field="bookings" value="${esc(s.results?.bookings ?? '')}"></label>
+    </div>
+    <label class="field" style="margin-top:10px">Notas<textarea data-saved-field="notes" placeholder="Qué funcionó, qué cambiarías…">${esc(s.notes || '')}</textarea></label>
+    <details><summary>Ver idea completa</summary>${ideaCard(s, 'bank')}</details>
+    <div class="row" style="margin-top:10px"><small>Guardada el ${esc(dfLong.format(new Date(s.savedAt)))}</small><span class="spacer"></span>
+      <button class="btn small" data-action="saved-copy" data-uid="${esc(s.uid)}">Copiar</button>
+      <button class="btn small danger" data-action="saved-del" data-uid="${esc(s.uid)}">Eliminar</button>
+    </div>
+  </article>`).join('');
+  el.innerHTML = html;
+}
+
+function renderAjustes() {
+  const el = $('#panel-ajustes');
+  const b = state.brand;
+  el.innerHTML = `<div class="section-head"><div><h2>Ajustes</h2><p>Los datos de la marca se usan para rellenar las ideas. Los precios vienen de la web; cámbialos aquí si no coinciden.</p></div></div>
+    <div class="card">
+      <h3 style="font-size:22px;margin-bottom:12px">Marca</h3>
+      <div class="grid grid-3">
+        <label class="field">Nombre<input type="text" data-brand="name" value="${esc(b.name)}"></label>
+        <label class="field">Instagram<input type="text" data-brand="handle" value="${esc(b.handle)}"></label>
+        <label class="field">Barrio o zona<input type="text" data-brand="area" value="${esc(b.area)}"><span class="hint">Se usa en ideas locales y hashtags</span></label>
+        <label class="field">Ciudad<input type="text" data-brand="city" value="${esc(b.city)}"></label>
+        <label class="field">Web<input type="text" data-brand="web" value="${esc(b.web)}"></label>
+      </div>
+    </div>
+    <div class="card">
+      <h3 style="font-size:22px;margin-bottom:12px">Servicios</h3>
+      <div class="table-scroll"><table><thead><tr><th>Servicio</th><th class="num">Precio (€)</th><th class="num">Minutos</th></tr></thead><tbody>
+        ${state.services.map((s) => `<tr><td><input type="text" data-svc="${esc(s.slug)}" data-key="name" value="${esc(s.name)}"></td>
+          <td class="num"><input type="number" min="0" step="0.5" data-svc="${esc(s.slug)}" data-key="price" value="${esc(s.price)}" style="max-width:110px"></td>
+          <td class="num"><input type="number" min="0" step="5" data-svc="${esc(s.slug)}" data-key="minutes" value="${esc(s.minutes)}" style="max-width:110px"></td></tr>`).join('')}
+      </tbody></table></div>
+    </div>
+    <div class="card">
+      <h3 style="font-size:22px;margin-bottom:6px">Copia de seguridad</h3>
+      <p class="muted" style="margin:0 0 12px">Los datos solo están en este navegador. Si borras el historial o cambias de ordenador, se pierden: descarga una copia de vez en cuando.</p>
+      <div class="row">
+        <button class="btn primary" data-action="export">Descargar copia</button>
+        <label class="btn">Restaurar copia<input type="file" accept="application/json,.json" data-action-change="import" hidden></label>
+        <span class="spacer"></span>
+        <button class="btn danger" data-action="reset">Borrar todo</button>
+      </div>
+    </div>`;
+}
+
+function renderTabs() {
+  $$('.tab').forEach((t) => t.setAttribute('aria-selected', String(t.dataset.tab === state.ui.tab)));
+  $$('[role="tabpanel"]').forEach((p) => (p.hidden = p.id !== 'panel-' + state.ui.tab));
+  $$('[data-brand-name]').forEach((n) => (n.textContent = state.brand.name));
+}
+
+function render(which) {
+  renderTabs();
+  const map = { competencia: renderCompetencia, generador: renderGenerador, plan: renderPlan, banco: renderBanco, ajustes: renderAjustes };
+  (which ? [which] : Object.keys(map)).forEach((k) => map[k]());
+}
+
+function toRoman(n) {
+  const table = [[1000, 'M'], [900, 'CM'], [500, 'D'], [400, 'CD'], [100, 'C'], [90, 'XC'], [50, 'L'], [40, 'XL'], [10, 'X'], [9, 'IX'], [5, 'V'], [4, 'IV'], [1, 'I']];
+  let out = '';
+  for (const [v, s] of table) while (n >= v) { out += s; n -= v; }
+  return out;
+}
+
+let toastTimer;
+function toast(msg) {
+  const t = $('#toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2600);
+}
+
+async function copyText(text) {
+  try {
+    await navigator.clipboard.writeText(text);
+  } catch {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); } catch { /* sin portapapeles */ }
+    ta.remove();
+  }
+  toast('Copiado. Pégalo en WhatsApp o en tus notas.');
+}
+
+function download(name, content, type) {
+  const blob = new Blob([content], { type });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = name;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 2000);
+}
+
+/* ==========================================================================
+   Diálogo de competidor / tu cuenta
+   ========================================================================== */
+
+const dlg = $('#dlg');
+const dlgForm = $('#dlg-form');
+let editing = null; // 'me' | id | 'new'
+
+function buildDialogParts() {
+  $('#dlg-covers').innerHTML = CONTENT_TYPES.map((c) => `<label><input type="checkbox" name="covers" value="${c.id}"> <span>${esc(c.label)}</span></label>`).join('');
+  $('#dlg-dims').innerHTML = DIMENSIONS.map((d) => `<div class="dim"><div>${esc(d.label)}<span class="hint">${esc(d.hint)}</span></div>
+    <div class="seg" role="radiogroup" aria-label="${esc(d.label)}">
+      <label><input type="radio" name="score-${d.id}" value=""><span>–</span></label>
+      ${[1, 2, 3, 4, 5].map((n) => `<label><input type="radio" name="score-${d.id}" value="${n}"><span>${n}</span></label>`).join('')}
+    </div></div>`).join('');
+}
+
+function openDialog(target) {
+  editing = target;
+  const isMe = target === 'me';
+  const p = isMe ? state.me : target === 'new' ? emptyProfile() : state.competitors.find((c) => c.id === target);
+  if (!p) return;
+  $('#dlg-title').textContent = isMe ? `Tu cuenta: ${state.brand.name}` : target === 'new' ? 'Añadir competidor' : `Editar: ${p.name}`;
+  $$('[data-only="comp"]', dlgForm).forEach((n) => (n.hidden = isMe));
+  const f = dlgForm.elements;
+  ['name', 'ig', 'tiktok', 'area', 'bestPost', 'strengths', 'weaknesses', 'notes'].forEach((k) => (f[k].value = p[k] || ''));
+  if (isMe && !p.ig) f.ig.value = '@' + cleanHandle(state.brand.handle);
+  f.kind.value = p.kind || 'local';
+  ['igFollowers', 'tiktokFollowers', 'postsPerWeek', 'avgInteractions', 'avgViews', 'price', 'rating', 'reviews'].forEach((k) => (f[k].value = p[k] ?? ''));
+  if (isMe && p.price == null) f.price.value = myCutPrice() ?? '';
+  $$('input[name="covers"]', dlgForm).forEach((c) => (c.checked = (p.covers || []).includes(c.value)));
+  DIMENSIONS.forEach((d) => {
+    const v = String(p.scores?.[d.id] ?? '');
+    $$(`input[name="score-${d.id}"]`, dlgForm).forEach((r) => (r.checked = r.value === v));
+  });
+  dlg.showModal();
+  (isMe ? f.ig : f.name).focus();
+}
+
+dlgForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const f = dlgForm.elements;
+  const isMe = editing === 'me';
+  if (!isMe && !f.name.value.trim()) {
+    f.name.focus();
+    toast('Ponle nombre a la barbería.');
+    return;
+  }
+  const data = {
+    name: f.name.value.trim(), kind: f.kind.value, ig: cleanHandle(f.ig.value), tiktok: cleanHandle(f.tiktok.value), area: f.area.value.trim(),
+    igFollowers: toNum(f.igFollowers.value), tiktokFollowers: toNum(f.tiktokFollowers.value), postsPerWeek: toNum(f.postsPerWeek.value),
+    avgInteractions: toNum(f.avgInteractions.value), avgViews: toNum(f.avgViews.value), price: toNum(f.price.value),
+    rating: toNum(f.rating.value), reviews: toNum(f.reviews.value),
+    covers: $$('input[name="covers"]:checked', dlgForm).map((c) => c.value),
+    scores: Object.fromEntries(DIMENSIONS.map((d) => [d.id, toNum($(`input[name="score-${d.id}"]:checked`, dlgForm)?.value)]).filter(([, v]) => v != null)),
+    bestPost: f.bestPost.value.trim(), strengths: f.strengths.value.trim(), weaknesses: f.weaknesses.value.trim(), notes: f.notes.value.trim(),
+    updatedAt: new Date().toISOString(),
+  };
+  if (isMe) {
+    delete data.name;
+    delete data.kind;
+    state.me = { ...state.me, ...data };
+  } else if (editing === 'new') {
+    state.competitors.push({ ...emptyProfile(), ...data });
+  } else {
+    state.competitors = state.competitors.map((c) => (c.id === editing ? { ...c, ...data } : c));
+  }
+  save();
+  dlg.close();
+  render('competencia');
+  toast('Guardado.');
+});
+
+/* ==========================================================================
+   Eventos
+   ========================================================================== */
+
+function saveIdea(idea) {
+  if (!idea || state.saved.some((s) => s.uid === idea.uid)) return false;
+  state.saved.unshift({ ...idea, status: 'pendiente', results: { views: '', interactions: '', bookings: '' }, notes: '', publishedAt: '', savedAt: new Date().toISOString() });
+  save();
+  return true;
+}
+
+function setTab(tab) {
+  state.ui.tab = tab;
+  save();
+  render(tab);
+  window.scrollTo({ top: 0 });
+}
+
+document.addEventListener('click', (e) => {
+  const tabBtn = e.target.closest('.tab');
+  if (tabBtn) return setTab(tabBtn.dataset.tab);
+  const el = e.target.closest('[data-action]');
+  if (!el) return;
+  const a = el.dataset.action;
+  const findGen = () => genResults.find((i) => i.uid === el.dataset.uid);
+
+  switch (a) {
+    case 'go':
+      e.preventDefault();
+      setTab(el.dataset.tab);
+      break;
+    case 'comp-add': openDialog('new'); break;
+    case 'comp-edit': openDialog(el.dataset.id); break;
+    case 'me-edit': openDialog('me'); break;
+    case 'dlg-close': dlg.close(); break;
+    case 'comp-del': {
+      const c = state.competitors.find((x) => x.id === el.dataset.id);
+      if (c && confirm(`¿Eliminar a ${c.name}?`)) {
+        state.competitors = state.competitors.filter((x) => x.id !== c.id);
+        if (state.ui.gen.focus === c.id) state.ui.gen.focus = '';
+        save();
+        render('competencia');
+      }
+      break;
+    }
+    case 'load-presets': {
+      PRESETS.forEach((p) => {
+        if (!state.competitors.some((c) => c.presetId === p.presetId)) state.competitors.push({ ...emptyProfile(), ...p, updatedAt: '2026-10-03T12:00:00.000Z' });
+      });
+      save();
+      render('competencia');
+      toast('Ficha cargada. Complétala con lo que veas en su perfil.');
+      break;
+    }
+    case 'gen-gaps':
+      state.ui.gen = { ...state.ui.gen, gaps: true, focus: '', pillar: '', format: '', goal: '', service: '' };
+      save();
+      setTab('generador');
+      runGenerator(5);
+      break;
+    case 'comp-beat':
+      state.ui.gen = { ...state.ui.gen, gaps: true, focus: el.dataset.id, pillar: '', format: '', goal: '', service: '' };
+      save();
+      setTab('generador');
+      runGenerator(5);
+      break;
+    case 'clear-focus':
+      state.ui.gen.focus = '';
+      save();
+      renderGenerador();
+      break;
+    case 'gen': runGenerator(Number(el.dataset.n) || 1); break;
+    case 'gen-clear': genResults = []; renderGenerador(); break;
+    case 'idea-save':
+      if (saveIdea(findGen())) { toast('Guardada en el banco.'); renderGenerador(); }
+      break;
+    case 'idea-copy': { const i = findGen(); if (i) copyText(ideaToText(i)); break; }
+    case 'idea-discard':
+      genResults = genResults.filter((i) => i.uid !== el.dataset.uid);
+      renderGenerador();
+      break;
+    case 'idea-replace': {
+      const idx = genResults.findIndex((i) => i.uid === el.dataset.uid);
+      if (idx < 0) break;
+      const exclude = new Set(genResults.map((i) => i.templateId));
+      const next = generateIdea({ ...genOpts(), exclude });
+      if (next) { genResults[idx] = next; renderGenerador(); } else toast('No quedan más ideas con estos filtros.');
+      break;
+    }
+    case 'plan-build': buildPlan(); renderPlan(); toast('Plan listo.'); break;
+    case 'plan-swap': {
+      const i = Number(el.dataset.i);
+      const it = state.plan.items[i];
+      if (!it) break;
+      const exclude = new Set(state.plan.items.map((x) => x.idea.templateId));
+      const ref = fromISO(it.date);
+      const opts = it.kind === 'event' && it.idea.event
+        ? { event: it.idea.event.id, exclude, excludeFormats: ['story'], gaps: true, ref }
+        : { pillar: it.idea.pillar, event: 'none', exclude, excludeFormats: ['story'], gaps: true, ref };
+      const next = generateIdea(opts) || generateIdea({ ...opts, pillar: '', event: 'none' });
+      if (next) {
+        state.plan.items[i] = { ...it, idea: next, time: slotTime(next.format, ref.getDay()) };
+        save();
+        renderPlan();
+      }
+      break;
+    }
+    case 'plan-save': {
+      const it = state.plan.items[Number(el.dataset.i)];
+      if (it && saveIdea({ ...it.idea, plannedFor: it.date })) { toast('Guardada en el banco.'); renderPlan(); }
+      break;
+    }
+    case 'plan-save-all': {
+      let n = 0;
+      state.plan.items.forEach((it) => { if (saveIdea({ ...it.idea, plannedFor: it.date })) n++; });
+      toast(n ? `${n} ideas guardadas en el banco.` : 'Ya estaban todas guardadas.');
+      renderPlan();
+      break;
+    }
+    case 'plan-copy': {
+      const p = state.plan;
+      const lines = [`PLAN DE CONTENIDO · ${state.brand.name}`, ''];
+      p.items.forEach((it) => lines.push(`${dfDay.format(fromISO(it.date))} · ${it.time} · ${FORMATS[it.idea.format]?.label}`, `${it.idea.title}`, `Gancho: «${it.idea.hook}»`, ''));
+      if (p.stories?.length) {
+        lines.push('STORIES (cada día al abrir: huecos libres de hoy con enlace a la reserva)');
+        p.stories.forEach((s) => lines.push(`${dfDay.format(fromISO(s.date))}: ${s.text}`));
+      }
+      copyText(lines.join('\n'));
+      break;
+    }
+    case 'plan-csv': {
+      const q = (v) => `"${String(v ?? '').replace(/"/g, '""')}"`;
+      const head = ['Fecha', 'Día', 'Hora', 'Formato', 'Pilar', 'Título', 'Gancho', 'Guion', 'Texto en pantalla', 'Pie de foto', 'Llamada a la acción', 'Hashtags'];
+      const rows = state.plan.items.map((it) => {
+        const d = fromISO(it.date);
+        const i = it.idea;
+        return [it.date, new Intl.DateTimeFormat('es-ES', { weekday: 'long' }).format(d), it.time, FORMATS[i.format]?.label, PILLARS[i.pillar]?.label, i.title, i.hook, i.steps.map((s, n) => `${n + 1}. ${s}`).join(' '), i.ost, i.caption, i.cta, i.hashtags.join(' ')].map(q).join(';');
+      });
+      download(`plan-contenido-${state.plan.start}.csv`, '﻿' + [head.map(q).join(';'), ...rows].join('\r\n'), 'text/csv;charset=utf-8');
+      break;
+    }
+    case 'plan-print': window.print(); break;
+    case 'saved-copy': { const s = state.saved.find((x) => x.uid === el.dataset.uid); if (s) copyText(ideaToText(s)); break; }
+    case 'saved-del': {
+      if (confirm('¿Eliminar esta idea del banco?')) {
+        state.saved = state.saved.filter((x) => x.uid !== el.dataset.uid);
+        save();
+        renderBanco();
+      }
+      break;
+    }
+    case 'export':
+      download(`imperio-generador-copia-${toISO(new Date())}.json`, JSON.stringify({ app: 'imperio-generador', version: 1, exportedAt: new Date().toISOString(), state }, null, 2), 'application/json');
+      break;
+    case 'reset':
+      if (confirm('Se borrarán competidores, ideas guardadas y el plan. ¿Seguro? (Descarga antes una copia si dudas)')) {
+        state = defaultState();
+        genResults = [];
+        save();
+        render();
+        toast('Todo borrado.');
+      }
+      break;
+  }
+});
+
+document.addEventListener('change', (e) => {
+  const t = e.target;
+  if (t.dataset.gen) {
+    state.ui.gen[t.dataset.gen] = t.type === 'checkbox' ? t.checked : t.value;
+    save();
+    renderGenerador();
+  } else if (t.dataset.plan) {
+    state.ui.plan[t.dataset.plan] = t.type === 'checkbox' ? t.checked : t.value;
+    save();
+  } else if (t.matches('[data-bank-filter]')) {
+    state.ui.bankFilter = t.value;
+    save();
+    renderBanco();
+  } else if (t.dataset.savedField === 'status') {
+    const s = state.saved.find((x) => x.uid === t.closest('[data-saved]').dataset.saved);
+    if (s) {
+      s.status = t.value;
+      if (t.value === 'publicada' && !s.publishedAt) s.publishedAt = toISO(new Date());
+      save();
+      renderBanco();
+    }
+  } else if (t.dataset.actionChange === 'import') {
+    const file = t.files && t.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const data = JSON.parse(reader.result);
+        if (data.app !== 'imperio-generador' || !data.state) throw new Error('formato');
+        if (!confirm('Se sustituirán los datos actuales por los de la copia. ¿Continuar?')) return;
+        state = normalize(data.state);
+        genResults = [];
+        save();
+        render();
+        toast('Copia restaurada.');
+      } catch {
+        toast('Ese archivo no es una copia de esta herramienta.');
+      }
+    };
+    reader.readAsText(file);
+    t.value = '';
+  } else if (t.dataset.brand || t.dataset.svc) {
+    render('competencia');
+  }
+});
+
+/* Campos de texto y números: se guardan mientras escribes, sin repintar. */
+document.addEventListener('input', (e) => {
+  const t = e.target;
+  if (t.dataset.brand) {
+    state.brand[t.dataset.brand] = t.value;
+    if (t.dataset.brand === 'name') $$('[data-brand-name]').forEach((n) => (n.textContent = t.value));
+    save();
+  } else if (t.dataset.svc) {
+    const s = state.services.find((x) => x.slug === t.dataset.svc);
+    if (s) {
+      s[t.dataset.key] = t.dataset.key === 'name' ? t.value : toNum(t.value) ?? 0;
+      save();
+    }
+  } else if (t.dataset.savedField && t.dataset.savedField !== 'status') {
+    const s = state.saved.find((x) => x.uid === t.closest('[data-saved]').dataset.saved);
+    if (!s) return;
+    const k = t.dataset.savedField;
+    if (['views', 'interactions', 'bookings'].includes(k)) s.results = { ...(s.results || {}), [k]: t.value };
+    else s[k] = t.value;
+    save();
+  }
+});
+
+/* Flechas entre pestañas. */
+$('.tabs [role="tablist"]').addEventListener('keydown', (e) => {
+  if (!['ArrowLeft', 'ArrowRight'].includes(e.key)) return;
+  const tabs = $$('.tab');
+  const i = tabs.findIndex((t) => t.dataset.tab === state.ui.tab);
+  const next = tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
+  setTab(next.dataset.tab);
+  next.focus();
+});
+
+/* ==========================================================================
+   Inicio
+   ========================================================================== */
+
+function drawLaurel() {
+  const CX = 50, CY = 52, R = 36;
+  const leaf = (l) => { const w = l * 0.3; return `M0 0 Q${l * 0.45} ${-w} ${l} 0 Q${l * 0.45} ${w} 0 0Z`; };
+  let leaves = '';
+  for (let i = 0; i < 9; i++) {
+    const t = i / 8, deg = 104 + 140 * t, rad = (deg * Math.PI) / 180;
+    const x = (CX + R * Math.cos(rad)).toFixed(2), y = (CY + R * Math.sin(rad)).toFixed(2), len = 13 - t * 5.5;
+    leaves += `<path d="${leaf(len)}" transform="translate(${x} ${y}) rotate(${deg + 60})" fill="currentColor"/>`;
+    leaves += `<path d="${leaf(len * 0.92)}" transform="translate(${x} ${y}) rotate(${deg + 124})" fill="currentColor"/>`;
+  }
+  const branch = `<g>${leaves}</g>`;
+  $('#laurel').innerHTML = `${branch}<g transform="translate(100 0) scale(-1 1)">${branch}</g><text x="50" y="60" text-anchor="middle" font-family="Georgia, serif" font-size="26" fill="currentColor">I</text>`;
+}
+
+if (!storageOk) $('#storage-warning').hidden = false;
+drawLaurel();
+buildDialogParts();
+render();
+</script>
+</body>
+</html>
